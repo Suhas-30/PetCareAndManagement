@@ -4,14 +4,13 @@ import image2 from "./assets/images/image2.svg";
 // import image3 from "./assets/images/image3.svg";
 import image4 from "./assets/images/image4.svg";
 import images from "./assets/images/image5.svg";
-import Navbar from "./components/Navbar";
+import PublicNavbar from "./components/navbars/PublicNavbar";
 
 export default function Home() {
-  const navigate  = useNavigate();
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-[#F7F9FB] text-[#2E2E2E]">
-        <Navbar />
       {/* Hero Section */}
       <section className="bg-[#2FB7B2] text-white px-6 py-8">
         <div className="max-w-5xl mx-auto text-center">
@@ -43,14 +42,13 @@ export default function Home() {
 
       {/* Features Section */}
       <section className="py-16 px-6">
-
         {/* //add pet */}
         <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
           <div
             className="bg-white rounded-xl shadow p-6 text-center cursor-pointer hover:shadow-lg transition"
             onClick={() => {
-              navigate("/add-pet")
-              console.log("Add Pet to Profile clicked")
+              navigate("/pets/add");
+              console.log("Add Pet to Profile clicked");
             }}
           >
             <img
@@ -64,15 +62,13 @@ export default function Home() {
               details.
             </p>
           </div>
-          
 
           {/* Appointents list */}
           <div
             className="bg-white rounded-xl shadow p-6 text-center cursor-pointer hover:shadow-lg transition"
             onClick={() => {
-              
-              console.log("Vet Appointments clicked")
-              navigate("/appointments")
+              console.log("Vet Appointments clicked");
+              navigate("/appointments");
             }}
           >
             <img
@@ -90,8 +86,8 @@ export default function Home() {
           <div
             className="bg-white rounded-xl shadow p-6 text-center cursor-pointer hover:shadow-lg transition"
             onClick={() => {
-              console.log("Pet Marketplace clicked")
-              navigate("/market-place")
+              console.log("Pet Marketplace clicked");
+              navigate("/market-place");
             }}
           >
             <img
