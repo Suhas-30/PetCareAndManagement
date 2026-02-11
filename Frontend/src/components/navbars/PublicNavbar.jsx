@@ -47,7 +47,7 @@ export default function PublicNavbar() {
 
                 <button
                   onClick={() => {
-                    navigate("/doctor-register");
+                    navigate("/doctor/register");
                     setOpenJoin(false);
                   }}
                   className="w-full text-left px-4 py-2 hover:bg-[#F7F9FB]"

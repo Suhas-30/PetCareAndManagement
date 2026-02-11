@@ -4,7 +4,7 @@ import AddPet from "../pet/AddPet";
 export default function PetRoutes() {
   return (
     <>
-      <Route path="/pets/add" element={<AddPet></AddPet>}></Route>
+      <Route path="/pets/add" element={<AddPet/>}></Route>
     </>
   );
 }

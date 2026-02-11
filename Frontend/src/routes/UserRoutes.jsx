@@ -1,23 +1,24 @@
 import { Route } from "react-router-dom";
 import RequiredUserAuth from "./RequiredUserAuth";
 
-import UserDashboard from "../user/UserDashboard";
+import UserDashboard from "../user/pages/UserDashboard";
 import AddPet from "../pet/AddPet";
-import Appointments from "../user/Appointments";
+import Appointments from "../user/pages/Appointments";
 
 export default function UserRoutes() {
   return (
     <>
       <Route
-        path="/dashboard"
+        path="/user/dashboard"
         element={
           <RequiredUserAuth>
             <UserDashboard />
           </RequiredUserAuth>
         }
       />
+
       <Route
-        path="/appointments"
+        path="/user/appointments"
         element={
           <RequiredUserAuth>
             <Appointments />
