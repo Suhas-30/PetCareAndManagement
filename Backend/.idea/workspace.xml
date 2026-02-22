@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="45386635-bbb0-4acb-a83b-fdef7964182b" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/petcare/Alive.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/petcare/Health.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/src/auth/Login.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/auth/Login.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/src/auth/VerifyEmail.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/auth/VerifyEmail.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/src/doctor/pages/DoctorDashboard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/doctor/pages/DoctorDashboard.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/src/doctor/pages/DoctorRegister.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/doctor/pages/DoctorRegister.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/src/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/src/pet/AddPet.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/src/routes/DoctorRoutes.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/routes/DoctorRoutes.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/src/routes/PetRoutes.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/routes/PetRoutes.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/src/routes/UserRoutes.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/routes/UserRoutes.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/src/user/pages/UserDashboard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/user/pages/UserDashboard.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/src/user/pages/UserRegister.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/user/pages/UserRegister.jsx" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 4
+}</component>
+  <component name="ProjectId" id="39pKxruJBuGlPbFeo9SMkVRiewf" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.PetCareApplication.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;
+  }
+}</component>
+  <component name="RunManager">
+    <configuration name="PetCareApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="envFilePaths">
+        <option value="$PROJECT_DIR$/PetCare/.env" />
+      </option>
+      <option name="MAIN_CLASS_NAME" value="com.example.PetCare.PetCareApplication" />
+      <module name="PetCare" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.example.PetCare.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.PetCareApplication" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="45386635-bbb0-4acb-a83b-fdef7964182b" name="Changes" comment="" />
+      <created>1771387824542</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1771387824542</updated>
+    </task>
+    <servers />
+  </component>
+</project>

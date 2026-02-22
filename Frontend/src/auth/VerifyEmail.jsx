@@ -1,11 +1,38 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../api/axios";
 
 export default function VerifyEmail() {
-  const [otp, setOtp] = useState(["", "", "", "", ""]);
-  const inputsRef = useRef([]);
   const navigate = useNavigate();
 
+  // 6 digit OTP
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [timer, setTimer] = useState(60);
+
+  const inputsRef = useRef([]);
+
+  // get userId saved after registration
+  const userId = sessionStorage.getItem("verifyUserId");
+
+  /* ---------------- PAGE GUARD ---------------- */
+  useEffect(() => {
+    if (!userId) {
+      navigate("/register");
+    }
+  }, [userId, navigate]);
+
+  /* ---------------- TIMER ---------------- */
+  useEffect(() => {
+    if (timer === 0) return;
+
+    const interval = setInterval(() => {
+      setTimer((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [timer]);
+
+  /* ---------------- OTP INPUT HANDLING ---------------- */
   const handleChange = (value, index) => {
     if (!/^\d?$/.test(value)) return;
 
@@ -13,7 +40,7 @@ export default function VerifyEmail() {
     newOtp[index] = value;
     setOtp(newOtp);
 
-    if (value && index < 4) {
+    if (value && index < 5) {
       inputsRef.current[index + 1].focus();
     }
   };
@@ -24,11 +51,65 @@ export default function VerifyEmail() {
     }
   };
 
-  const handleSubmit = (e) => {
+  /* ---------------- VERIFY OTP API ---------------- */
+  const verifyOtpApi = async (payload) => {
+    try {
+      const response = await api.post("/auth/verify-otp", {
+        userId: payload.userId,
+        otp: payload.otp,
+      });
+
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  };
+
+  /* ---------------- RESEND OTP API ---------------- */
+  const resendOtpApi = async (payload) => {
+    try {
+      const response = await api.post("/auth/resend-otp", {
+        userId: payload.userId,
+      });
+
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  };
+
+  /* ---------------- SUBMIT ---------------- */
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     const finalOtp = otp.join("");
-    console.log("OTP:", finalOtp);
-    navigate("/login");
+
+    try {
+      await verifyOtpApi({
+        userId: userId,
+        otp: finalOtp,
+      });
+
+      // cleanup after success
+      sessionStorage.removeItem("verifyUserId");
+
+      navigate("/login");
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  /* ---------------- RESEND ---------------- */
+  const handleResendOtp = async () => {
+    try {
+      await resendOtpApi({
+        userId: userId,
+      });
+
+      setTimer(60);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -38,8 +119,9 @@ export default function VerifyEmail() {
         <h2 className="text-2xl font-bold text-center text-[#2FB7B2] mb-2">
           Verify Your Email
         </h2>
+
         <p className="text-center text-sm text-gray-500 mb-6">
-          Enter the 5-digit OTP sent to your email
+          Enter the 6-digit OTP sent to your email
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -68,9 +150,16 @@ export default function VerifyEmail() {
 
         <p className="text-center text-xs text-gray-500 mt-4">
           Didn’t receive OTP?{" "}
-          <span className="text-[#2FB7B2] font-semibold cursor-pointer hover:underline">
-            Resend
-          </span>
+          {timer > 0 ? (
+            <span className="text-gray-400">Resend in {timer}s</span>
+          ) : (
+            <span
+              onClick={handleResendOtp}
+              className="text-[#2FB7B2] font-semibold cursor-pointer hover:underline"
+            >
+              Resend
+            </span>
+          )}
         </p>
 
       </div>

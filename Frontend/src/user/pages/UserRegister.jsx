@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../../api/axios";
 
 export default function UserRegister() {
   const [name, setName] = useState("");
@@ -8,9 +9,23 @@ export default function UserRegister() {
   const [showTerms, setShowTerms] = useState(false);
   const navigate = useNavigate();
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-    console.log(name, email, password);
+
+    try{
+      const response = await api.post("/auth/register", {
+        email,
+        password,
+        fullName:name,
+      });
+      console.log("Registration success:", response.data);
+      const userId = response.data.data.userId;
+      sessionStorage.setItem("verifyUserId", userId);
+      navigate("/verify-email");
+    }catch(error){
+    console.error("Registration failed:",  error.response?.data || error.message);
+    }
+    
     navigate("/verify-email");
   };
 
