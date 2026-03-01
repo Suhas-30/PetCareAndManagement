@@ -2,6 +2,9 @@ import { Route } from "react-router-dom";
 import AddPet from "../pet/pages/AddPet";
 import MyPets from "../pet/pages/MyPets";
 import RequiredUserAuth from "./RequiredUserAuth";
+import PetHealth from "../pet/pages/PetHealth";
+
+
 
 export default function PetRoutes() {
   return (
@@ -20,6 +23,15 @@ export default function PetRoutes() {
         element={
           <RequiredUserAuth>
             <MyPets />
+          </RequiredUserAuth>
+        }
+      />
+
+      <Route
+        path="/pets/:petId/health"
+        element={
+          <RequiredUserAuth>
+            <PetHealth />
           </RequiredUserAuth>
         }
       />

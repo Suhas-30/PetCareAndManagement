@@ -8,12 +8,17 @@ export const createPet = async (formData) => {
   });
 };
 
-export const getPetCount = async ()=>{
+export const getPetCount = async () => {
   const res = await api.get("/pets/count");
   return res.data;
-}
+};
 
 export const getMyPets = async () => {
   const res = await api.get("/pets");
   return res.data;
+};
+
+/* ✅ DELETE PET */
+export const deletePet = async (petId) => {
+  return await api.delete(`/pets/${petId}`);
 };

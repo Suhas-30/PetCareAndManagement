@@ -4,6 +4,7 @@ import com.example.PetCare.pets.dto.PetCreateRequest;
 import com.example.PetCare.pets.dto.PetCreateResponse;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface PetService {
     PetCreateResponse createPet(PetCreateRequest request, String email);
@@ -11,5 +12,7 @@ public interface PetService {
     List<PetCreateResponse> getMyPets(String email);
 
     long getPetCount(String email);
+
+    void deletePet(UUID petId, String email);
 
 }

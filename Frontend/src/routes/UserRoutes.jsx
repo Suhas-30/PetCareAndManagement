@@ -4,6 +4,8 @@ import RequiredUserAuth from "./RequiredUserAuth";
 import UserDashboard from "../user/pages/UserDashboard";
 
 import Appointments from "../user/pages/Appointments";
+import Profile from "../user/pages/Profile";
+import DoctorList from "../user/pages/DoctorList";
 
 export default function UserRoutes() {
   return (
@@ -21,7 +23,16 @@ export default function UserRoutes() {
         path="/user/appointments"
         element={
           <RequiredUserAuth>
-            <Appointments />
+            <DoctorList />
+          </RequiredUserAuth>
+        }
+      />
+
+      <Route
+        path="/user/profile"
+        element={
+          <RequiredUserAuth>
+            <Profile />
           </RequiredUserAuth>
         }
       />

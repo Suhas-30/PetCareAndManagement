@@ -11,8 +11,10 @@ import com.example.PetCare.pets.service.PetService;
 import com.example.PetCare.user.domain.User;
 import com.example.PetCare.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class PetServiceImpl implements PetService {
@@ -72,4 +74,19 @@ public class PetServiceImpl implements PetService {
 
         return petRepository.countByUser(user);
     }
+
+    @Override
+    @Transactional
+    public void deletePet(UUID petId, String email) {
+
+        Pet pet = petRepository.findById(petId)
+                .orElseThrow(() -> new AppException("Pet not found"));
+
+        if (!pet.getUser().getEmail().equals(email)) {
+            throw new AppException("You cannot delete this pet");
+        }
+
+        petRepository.delete(pet);
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.example.PetCare.admin.controller;
 
+import com.example.PetCare.admin.dto.AdminDoctorApplicationResponse;
 import com.example.PetCare.admin.dto.RejectDoctorApplicationRequest;
 import com.example.PetCare.admin.service.AdminDoctorService;
 import com.example.PetCare.common.response.ApiResponse;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping({"/admin/doctor-applications"})
+@RequestMapping("/admin/doctor-applications")
 public class AdminDoctorController {
     private final DoctorApplicationRepository doctorApplicationRepository;
     private final AdminDoctorService adminDoctorService;
@@ -23,26 +24,45 @@ public class AdminDoctorController {
         this.adminDoctorService = adminDoctorService;
     }
 
-    @GetMapping
-    public ResponseEntity<ApiResponse<List<DoctorApplication>>> getApplications(@RequestParam(defaultValue = "PENDING") String status) {
-        List<DoctorApplication> applications = this.doctorApplicationRepository.findByStatus(ApplicationStatus.valueOf(status));
-        return ResponseEntity.ok(new ApiResponse(true, "Applications fetched", applications));
-    }
+
 
     @PostMapping({"/checkAdminDoc"})
     public String checkAdminDocCont() {
         return "Is working";
     }
 
-    @PostMapping({"/{id}/approve"})
-    public ResponseEntity<ApiResponse<Void>> approve(@PathVariable UUID id) {
-        String message = this.adminDoctorService.approveDoctorApplication(id);
-        return ResponseEntity.ok(new ApiResponse(true, message, (Object)null));
+
+
+    @GetMapping("/pending")
+    public ResponseEntity<ApiResponse<List<AdminDoctorApplicationResponse>>> getPending() {
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        true,
+                        "Application fetched",
+                        adminDoctorService.getPendingApplications()
+                )
+        );
     }
 
-    @PostMapping({"/{id}/reject"})
-    public ResponseEntity<ApiResponse<Void>> reject(@PathVariable UUID id, @RequestBody RejectDoctorApplicationRequest request) {
-        String message = this.adminDoctorService.rejectDoctorApplication(id, request.getReason());
-        return ResponseEntity.ok(new ApiResponse(true, message, (Object)null));
+    @PutMapping("/{id}/approve")
+    public ResponseEntity<?> approveApplication(@PathVariable UUID id) {
+
+        adminDoctorService.approveApplication(id);
+
+        return ResponseEntity.ok(new ApiResponse<>(true, "Application approved successfully", null));
+
     }
+
+    @PutMapping("/{id}/reject")
+    public ResponseEntity<?> rejectApplication(
+            @PathVariable UUID id,
+            @RequestParam String reason
+    ) {
+
+        adminDoctorService.rejectApplication(id, reason);
+
+        return ResponseEntity.ok(new ApiResponse<>(true,"Application rejected successfully", null ));
+    }
+
 }

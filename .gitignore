@@ -1,0 +1,21 @@
+# Environment
+.env
+
+# Uploads (runtime files)
+Backend/uploads/
+
+# Spring Boot
+target/
+*.log
+
+# Node
+node_modules/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.dbgit add .

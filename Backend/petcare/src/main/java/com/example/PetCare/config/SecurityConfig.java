@@ -2,6 +2,7 @@ package com.example.PetCare.config;
 
 import com.example.PetCare.common.security.JwtAuthenticationFilter;
 import com.example.PetCare.common.security.JwtService;
+import com.example.PetCare.user.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -21,8 +22,8 @@ import java.util.List;
 public class SecurityConfig {
 
     @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter(JwtService jwtService) {
-        return new JwtAuthenticationFilter(jwtService);
+    public JwtAuthenticationFilter jwtAuthenticationFilter(JwtService jwtService, UserRepository userRepository) {
+        return new JwtAuthenticationFilter(jwtService, userRepository);
     }
 
     @Bean
@@ -42,6 +43,9 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
+                .headers(headers -> headers
+                        .frameOptions(frame -> frame.disable())
+                )
 
                 // ✅ Authorization rules
                 .authorizeHttpRequests(auth -> auth
@@ -50,9 +54,11 @@ public class SecurityConfig {
 
                         // ⭐ ADD THIS
                         .requestMatchers("/uploads/**").permitAll()
+                        .requestMatchers("/auth/refresh").authenticated()
 
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/files/**").permitAll()
                         .anyRequest().authenticated()
                 )
 

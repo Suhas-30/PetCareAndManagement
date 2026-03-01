@@ -1,10 +1,18 @@
 import { Navigate } from "react-router-dom";
 
-import { isAdminAuthenticated } from "../auth/adminAuth";
+export default function RequiredAdminAuth({ children }) {
 
-export default function RequiredAdminAuth({children}){
-    if(!isAdminAuthenticated()){
-        return <Navigate to="/admin" replace></Navigate>
-    }
-    return children
+  const session = localStorage.getItem("userSession");
+
+  if (!session) {
+    return <Navigate to="/login" replace />;
+  }
+
+  const user = JSON.parse(session);
+
+  if (user.role !== "ADMIN") {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
 }

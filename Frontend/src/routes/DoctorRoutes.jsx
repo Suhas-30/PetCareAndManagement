@@ -1,29 +1,48 @@
 import { Route } from "react-router-dom";
+import DoctorEntry from "../doctor/pages/DoctorEntry";
 import DoctorRegister from "../doctor/pages/DoctorRegister";
 import DoctorApplicationSuccess from "../doctor/pages/DoctorApplicationSuccess";
-import DoctorApplicationGuard from "../guards/DoctorApplicationGuard";
+import DoctorRegisterGuard from "../guards/DoctorRegisterGuard";
 import RequiredDoctorAuth from "./RequiredDoctorAuth";
 import DoctorDashboard from "../doctor/pages/DoctorDashboard";
-
+import DoctorAvailability from "../doctor/pages/DoctorAvailability"
 export default function DoctorRoutes() {
   return (
     <>
-      <Route path="/doctor/register" element={<DoctorRegister />} />
+      {/* Smart doctor entry */}
+      <Route path="/doctor" element={<DoctorEntry />} />
 
+      {/* Registration */}
       <Route
-        path="/doctor/application-success"
+        path="/doctor/register"
         element={
-          <DoctorApplicationGuard>
-            <DoctorApplicationSuccess />
-          </DoctorApplicationGuard>
+          <DoctorRegisterGuard>
+            <DoctorRegister />
+          </DoctorRegisterGuard>
         }
       />
 
+      {/* Pending screen */}
+      <Route
+        path="/doctor/application-success"
+        element={<DoctorApplicationSuccess />}
+      />
+
+      {/* Dashboard */}
       <Route
         path="/doctor/dashboard"
         element={
           <RequiredDoctorAuth>
             <DoctorDashboard />
+          </RequiredDoctorAuth>
+        }
+      />
+
+      <Route
+        path="/doctor/dashboard/availability"
+        element={
+          <RequiredDoctorAuth>
+            <DoctorAvailability />
           </RequiredDoctorAuth>
         }
       />

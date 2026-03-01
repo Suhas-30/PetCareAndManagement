@@ -13,6 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/pets")
@@ -61,8 +62,16 @@ public class PetController {
     }
 
     @DeleteMapping("/{petId}")
-    public ResponseEntity<?> deletePet(){
-        return null;
+    public ResponseEntity<ApiResponse> deletePet(
+            @PathVariable UUID petId,
+            @AuthenticationPrincipal UserPrincipal user
+    ) {
+
+        petService.deletePet(petId, user.getEmail());
+
+        return ResponseEntity.ok(
+                new ApiResponse(true, "Pet deleted successfully", null)
+        );
     }
 
 

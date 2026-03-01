@@ -1,22 +1,28 @@
-import { Route, Routes } from "react-router-dom";
-
-import AdminDashboard from "../admin/AdminDashboard";
-import AdminLogin from "../admin/AdminLogin";
+import { Route } from "react-router-dom";
 import RequiredAdminAuth from "./RequiredAdminAuth";
+import AdminDashboard from "../admin/pages/AdminDashboard";
+import DoctorApplications from "../admin/pages/DoctorApplications";
 
 export default function AdminRoutes() {
   return (
-    <Routes>
-      <Route path="/admin" element={<AdminLogin />} />
-
+    <>
       <Route
         path="/admin/dashboard"
         element={
           <RequiredAdminAuth>
-            <AdminDashboard></AdminDashboard>
+            <AdminDashboard />
           </RequiredAdminAuth>
         }
-      ></Route>
-    </Routes>
+      />
+
+      <Route
+        path="/admin/doctor-applications"
+        element={
+          <RequiredAdminAuth>
+            <DoctorApplications />
+          </RequiredAdminAuth>
+        }
+      />
+    </>
   );
 }

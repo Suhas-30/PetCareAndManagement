@@ -1,5 +1,7 @@
 package com.example.PetCare.common.security;
 
+import com.example.PetCare.user.domain.User;
+import com.example.PetCare.user.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,9 +20,14 @@ import java.util.List;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
+    private final UserRepository userRepository;
 
-    public JwtAuthenticationFilter(JwtService jwtService) {
+    public JwtAuthenticationFilter(
+            JwtService jwtService,
+            UserRepository userRepository
+    ) {
         this.jwtService = jwtService;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -32,10 +39,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         System.out.println("JWT FILTER EXECUTED");
         System.out.println("URI = " + request.getRequestURI());
-        System.out.println("HEADER = " + request.getHeader("Authorization"));
+
         String authHeader = request.getHeader("Authorization");
 
-        // ✅ Skip if no token
+        // ✅ No token → continue
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
@@ -44,18 +51,47 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = authHeader.substring(7);
 
         try {
+
             String email = jwtService.extractEmail(token);
 
-            if (jwtService.isTokenVaild(token, email)
+            if (jwtService.isTokenValid(token, email)
                     && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-                String role = jwtService.extractRole(token);
+                // ==============================
+                // LOAD USER FROM DATABASE
+                // ==============================
+                User user = userRepository.findByEmail(email)
+                        .orElseThrow();
 
-                // ✅ Create UserPrincipal instead of String
+                String dbRole = user.getRole().name();
+                String tokenRole = jwtService.extractRole(token);
+
+                // ==============================
+                // ⭐ ROLE CHANGE DETECTION
+                // ==============================
+                if (!dbRole.equals(tokenRole)) {
+
+                    System.out.println("ROLE CHANGED → issuing new token");
+
+                    String newToken = jwtService.generateToken(
+                            user.getId(),
+                            user.getEmail(),
+                            user.getRole()
+                    );
+
+                    // send refreshed token to frontend
+                    response.setHeader("X-NEW-TOKEN", newToken);
+                }
+
+                // ==============================
+                // AUTHENTICATION
+                // ==============================
                 UserPrincipal principal =
                         new UserPrincipal(
-                                email,
-                                List.of(new SimpleGrantedAuthority("ROLE_" + role))
+                                user.getId(),
+                                user.getEmail(),
+                                user.getPassword(),
+                                List.of(new SimpleGrantedAuthority("ROLE_" + dbRole))
                         );
 
                 UsernamePasswordAuthenticationToken authentication =
@@ -79,7 +115,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    // ✅ Prevent re-authentication during /error dispatch
+    // prevent duplicate execution on error dispatch
     @Override
     protected boolean shouldNotFilterErrorDispatch() {
         return true;
