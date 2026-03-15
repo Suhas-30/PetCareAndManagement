@@ -5,18 +5,13 @@ import api from "../../api/axios";
 import { useNavigate } from "react-router-dom";
 
 export default function Profile() {
-
   const [user, setUser] = useState(null);
   const [loadingUser, setLoadingUser] = useState(true);
 
   const navigate = useNavigate();
 
-  const {
-    doctorStatus,
-    setDoctorStatus,
-    fetchDoctorStatus,
-    loading
-  } = useDoctorStatus();
+  const { doctorStatus, setDoctorStatus, fetchDoctorStatus, loading, reason } =
+    useDoctorStatus();
 
   /* ---------- LOAD USER ---------- */
   useEffect(() => {
@@ -51,16 +46,14 @@ export default function Profile() {
   const initials =
     user?.fullName
       ?.split(" ")
-      .map(n => n[0])
+      .map((n) => n[0])
       .join("")
       .toUpperCase() || "U";
 
   return (
     <div className="max-w-5xl mx-auto p-6 space-y-6">
-
       {/* ================= PROFILE HEADER ================= */}
       <div className="bg-white rounded-2xl shadow p-6 flex items-center gap-6">
-
         {/* Avatar */}
         <div className="w-16 h-16 rounded-full bg-[#2FB7B2] text-white flex items-center justify-center text-xl font-semibold">
           {initials}
@@ -89,9 +82,7 @@ export default function Profile() {
 
       {/* ================= ACCOUNT DETAILS ================= */}
       <div className="bg-[#F7F9FB] rounded-2xl shadow p-6">
-        <h3 className="text-lg font-semibold mb-4">
-          Account Information
-        </h3>
+        <h3 className="text-lg font-semibold mb-4">Account Information</h3>
 
         <div className="grid md:grid-cols-2 gap-4 text-sm">
           <div>
@@ -111,9 +102,7 @@ export default function Profile() {
 
           <div>
             <p className="text-gray-500">Account Status</p>
-            <p className="font-medium text-green-600">
-              Active
-            </p>
+            <p className="font-medium text-green-600">Active</p>
           </div>
         </div>
       </div>
@@ -144,9 +133,7 @@ export default function Profile() {
       {doctorStatus === "APPROVED" && (
         <div className="bg-white rounded-2xl shadow p-6 flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-semibold">
-              Doctor Workspace
-            </h3>
+            <h3 className="text-lg font-semibold">Doctor Workspace</h3>
             <p className="text-sm text-gray-500">
               Manage appointments, availability and consultations.
             </p>
@@ -167,6 +154,13 @@ export default function Profile() {
           <h3 className="text-lg font-semibold text-red-500">
             Application Rejected
           </h3>
+
+          {/* ✅ SHOW REASON */}
+          {reason && (
+            <p className="mt-2 text-sm text-gray-600">
+              <span className="font-medium text-red-500">Reason:</span> {reason}
+            </p>
+          )}
 
           <button
             onClick={() => navigate("/doctor/register")}
@@ -197,7 +191,6 @@ export default function Profile() {
           </button>
         </div>
       )}
-
     </div>
   );
 }

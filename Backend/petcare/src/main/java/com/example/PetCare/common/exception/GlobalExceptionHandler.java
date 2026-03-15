@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.reactive.resource.NoResourceFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -27,4 +28,6 @@ public class GlobalExceptionHandler {
         ApiResponse<Void> response = new ApiResponse(false, errorMessage, (Object)null);
         return ResponseEntity.badRequest().body(response);
     }
+
+
 }

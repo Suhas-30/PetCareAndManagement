@@ -1,263 +1,295 @@
-import { useMemo, useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-
-import ScheduleCalendar from "../components/ScheduleCalendar";
-import AddSessionModal from "../components/AddSessionModal";
-import AppAlert from "../../components/alrettab/AppAlert";
-
+import { useState, useEffect } from "react";
+import { Trash2 } from "lucide-react";
 import {
-  saveDoctorSchedule,
-  getScheduleByDate,
-} from "../api/scheduleApi";
+  createSlot,
+  getSlotsByDate,
+  deleteSlot,
+  activateSlot,
+} from "../service/doctorSlotApi";
 
 export default function DoctorAvailability() {
+  const today = new Date().toISOString().split("T")[0];
 
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(today);
+  const [slots, setSlots] = useState([]);
+  const [startTime, setStartTime] = useState("");
+  const [duration, setDuration] = useState(30);
+  const [consultingFee, setConsultingFee] = useState("");
+  const [error, setError] = useState("");
+  const [deleteId, setDeleteId] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  // existing sessions from backend
-  const [existingSessions, setExistingSessions] = useState([]);
+  /* ================================
+     FETCH SLOTS
+  ================================ */
 
-  // new sessions added locally
-  const [draftSessions, setDraftSessions] = useState([]);
-
-  const [showModal, setShowModal] = useState(false);
-  const [alertMsg, setAlertMsg] = useState(null);
-  const [saving, setSaving] = useState(false);
-
-  /* ================= DATE ================= */
-
-  const formattedDate = useMemo(
-    () => selectedDate.toISOString().split("T")[0],
-    [selectedDate]
-  );
-
-  /* ================= TIME HELPERS ================= */
-
-  const toMinutes = (t) => {
-    const [h, m] = t.split(":").map(Number);
-    return h * 60 + m;
-  };
-
-  /* ================= VALIDATION ================= */
-
-  const validateSession = (newSession) => {
-
-    const combined = [
-      ...existingSessions,
-      ...draftSessions,
-      newSession
-    ].sort(
-      (a,b)=>toMinutes(a.startTime)-toMinutes(b.startTime)
-    );
-
-    for (let i=0;i<combined.length;i++) {
-
-      const curr = combined[i];
-
-      if (toMinutes(curr.endTime) <= toMinutes(curr.startTime))
-        return "End time must be after start time";
-
-      if (i>0){
-        const prevEnd = toMinutes(combined[i-1].endTime);
-        const currStart = toMinutes(curr.startTime);
-
-        if (currStart < prevEnd + 15)
-          return "15 min gap required between sessions";
-      }
-    }
-
-    return null;
-  };
-
-  /* ================= LOAD EXISTING ================= */
-
-  const loadScheduleByDate = async (date) => {
+  const fetchSlots = async (date) => {
     try {
-      const res = await getScheduleByDate(date);
-
-      if (res.success) {
-        setExistingSessions(res.data.sessions || []);
-      }
-    } catch {
-      setExistingSessions([]);
+      setLoading(true);
+      const res = await getSlotsByDate(date);
+      setSlots(res.data.data || []);
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to load slots");
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    setDraftSessions([]);
-    loadScheduleByDate(formattedDate);
-  }, [formattedDate]);
+    fetchSlots(selectedDate);
+  }, [selectedDate]);
 
-  /* ================= ADD SESSION ================= */
+  /* ================================
+     CREATE SLOT
+  ================================ */
 
-  const handleAddSession = (session) => {
-
-    const error = validateSession(session);
-
-    if (error) {
-      setAlertMsg(error);
-      return;
-    }
-
-    setDraftSessions(prev => [...prev, session]);
-    setShowModal(false);
-  };
-
-  /* ================= SAVE ================= */
-
-  const handleSaveSchedule = async () => {
-
-    const allSessions = [
-      ...existingSessions,
-      ...draftSessions
-    ];
-
-    if (allSessions.length === 0) {
-      setAlertMsg("Add at least one session");
-      return;
-    }
+  const handleAddSlot = async () => {
+    if (!startTime) return setError("Select start time");
+    if (!consultingFee || Number(consultingFee) <= 0)
+      return setError("Enter valid consulting fee");
 
     try {
-      setSaving(true);
+      setError("");
 
-      const payload = {
-        date: formattedDate,
-        isWorking: true,
-        sessions: allSessions,
-      };
+      await createSlot({
+        slotDate: selectedDate,
+        startTime,
+        durationMinutes: duration,
+        consultingFee: Number(consultingFee),
+      });
 
-      const res = await saveDoctorSchedule(payload);
-
-      if (res.success) {
-        setAlertMsg(res.message || "Schedule updated successfully");
-        setDraftSessions([]);
-        await loadScheduleByDate(formattedDate);
-      }
-
+      setStartTime("");
+      fetchSlots(selectedDate);
     } catch (err) {
-
-      const message =
-        err?.response?.data?.message ||
-        "Failed to save schedule";
-
-      setAlertMsg(message);
-
-    } finally {
-      setSaving(false);
+      setError(err.response?.data?.message || "Failed to create slot");
     }
   };
 
-  /* ================= UI ================= */
+  /* ================================
+     DELETE SLOT
+  ================================ */
+
+  const confirmDelete = async () => {
+    try {
+      await deleteSlot(deleteId);
+      setDeleteId(null);
+      fetchSlots(selectedDate);
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to delete slot");
+    }
+  };
+
+  /* ================================
+     ACTIVATE SLOT
+  ================================ */
+
+  const handleActivate = async (slotId) => {
+    try {
+      await activateSlot(slotId);
+      fetchSlots(selectedDate);
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to activate slot");
+    }
+  };
+
+  /* ================================
+     STATUS UI HELPER
+  ================================ */
+
+  const getStatusStyles = (status) => {
+    switch (status) {
+      case "AVAILABLE":
+        return {
+          border: "border-l-4 border-emerald-400",
+          badge: "bg-emerald-100 text-emerald-600",
+          dot: "bg-emerald-500",
+          label: "Available",
+        };
+      case "BOOKED":
+        return {
+          border: "border-l-4 border-red-400",
+          badge: "bg-red-100 text-red-600",
+          dot: "bg-red-500",
+          label: "Booked",
+        };
+      case "CANCELLED":
+        return {
+          border: "border-l-4 border-gray-400",
+          badge: "bg-gray-200 text-gray-600",
+          dot: "bg-gray-500",
+          label: "Cancelled",
+        };
+      default:
+        return {};
+    }
+  };
+
+  /* ================================
+     UI
+  ================================ */
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#F7F9FB] to-[#EEF3F6] px-12 py-10">
+    <div className="min-h-screen bg-gradient-to-br from-[#F7F9FB] to-[#EAFDFC] py-14 px-6 flex justify-center">
+      <div className="w-full max-w-4xl bg-white rounded-3xl shadow-xl p-8">
 
-      <h2 className="text-3xl font-semibold mb-10 text-gray-800">
-        Consultation Schedule
-      </h2>
+        <h2 className="text-3xl font-bold text-[#2E2E2E] mb-8">
+          Manage Availability
+        </h2>
 
-      <div className="grid md:grid-cols-2 gap-10 items-start">
+        {/* CONSULTING FEE */}
+        <div className="mb-8">
+          <label className="text-sm font-medium text-gray-600">
+            Consulting Fee (₹)
+          </label>
+          <input
+            type="number"
+            min="0"
+            value={consultingFee}
+            onChange={(e) => setConsultingFee(e.target.value)}
+            className="mt-2 w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#2FB7B2]"
+            placeholder="Enter consulting fee"
+          />
+        </div>
 
-        {/* CALENDAR */}
-        <ScheduleCalendar
-          selectedDate={selectedDate}
-          onChange={setSelectedDate}
-        />
+        {/* DATE */}
+        <div className="mb-8">
+          <label className="text-sm font-medium text-gray-600">
+            Select Date
+          </label>
+          <input
+            type="date"
+            value={selectedDate}
+            min={today}
+            onChange={(e) => setSelectedDate(e.target.value)}
+            className="mt-2 w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#2FB7B2]"
+          />
+        </div>
 
-        {/* RIGHT PANEL */}
-        <div className="
-          bg-white rounded-3xl border border-gray-200
-          shadow-[0_20px_50px_rgba(0,0,0,0.08)]
-          p-8 overflow-hidden
-        ">
+        {/* ADD SLOT */}
+        <div className="bg-[#F7F9FB] rounded-2xl p-6 mb-10 border border-gray-100">
+          <h3 className="text-lg font-semibold mb-4">
+            Add Time Slot
+          </h3>
 
-          <div className="flex gap-4 mb-8">
+          <div className="grid md:grid-cols-3 gap-4">
+            <input
+              type="time"
+              value={startTime}
+              onChange={(e) => setStartTime(e.target.value)}
+              className="border rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#6BCF9D]"
+            />
+
+            <select
+              value={duration}
+              onChange={(e) => setDuration(Number(e.target.value))}
+              className="border rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#6BCF9D]"
+            >
+              <option value={15}>15 mins</option>
+              <option value={30}>30 mins</option>
+              <option value={45}>45 mins</option>
+              <option value={60}>60 mins</option>
+            </select>
 
             <button
-              onClick={()=>setShowModal(true)}
-              className="
-                px-6 py-3 rounded-xl
-                bg-gradient-to-r from-[#2FB7B2] to-[#38C6C1]
-                text-white font-semibold
-              ">
-              + Add Session
+              onClick={handleAddSlot}
+              className="bg-[#FF9F43] text-white rounded-xl font-semibold px-6 py-3 hover:bg-orange-500 transition"
+            >
+              Add Slot
             </button>
-
-            {(draftSessions.length > 0) && (
-              <button
-                onClick={handleSaveSchedule}
-                disabled={saving}
-                className="
-                  px-6 py-3 rounded-xl
-                  bg-gradient-to-r from-[#6BCF9D] to-[#57B987]
-                  text-white font-semibold
-                  disabled:opacity-60
-                ">
-                {saving ? "Saving..." : "Save Schedule"}
-              </button>
-            )}
-
           </div>
 
-          {/* ===== EXISTING ===== */}
-          {existingSessions.length > 0 && (
-            <>
-              <p className="text-sm text-gray-500 mb-3">
-                Existing Sessions
-              </p>
-
-              {existingSessions.map((s,i)=>(
-                <div
-                  key={"ex"+i}
-                  className="border rounded-xl p-4 mb-3 bg-gray-50"
-                >
-                  {s.startTime} — {s.endTime}
-                </div>
-              ))}
-            </>
+          {error && (
+            <p className="text-red-500 text-sm mt-3">{error}</p>
           )}
-
-          {/* ===== DRAFT ===== */}
-          <AnimatePresence>
-            {draftSessions.map((s,i)=>(
-              <motion.div
-                key={"dr"+i}
-                initial={{opacity:0,y:20}}
-                animate={{opacity:1,y:0}}
-                exit={{opacity:0}}
-                className="
-                  border rounded-xl p-4 mb-3
-                  bg-green-50 font-semibold
-                "
-              >
-                {s.startTime} — {s.endTime}
-              </motion.div>
-            ))}
-          </AnimatePresence>
-
-          {existingSessions.length === 0 &&
-           draftSessions.length === 0 && (
-            <p className="text-gray-400">
-              No sessions added for this day.
-            </p>
-          )}
-
         </div>
+
+        {/* SLOT LIST */}
+        <div>
+          <h3 className="text-xl font-semibold mb-6">
+            Time Slots
+          </h3>
+
+          {loading ? (
+            <div className="text-center py-10">Loading...</div>
+          ) : slots.length === 0 ? (
+            <div className="text-center py-12 bg-[#F7F9FB] rounded-2xl border border-dashed">
+              No time slots created.
+            </div>
+          ) : (
+            <div className="space-y-5">
+              {slots.map((slot) => {
+                const statusUI = getStatusStyles(slot.status);
+
+                return (
+                  <div
+                    key={slot.id}
+                    className={`bg-white p-6 rounded-2xl shadow-md flex justify-between items-center transition hover:shadow-lg ${statusUI.border}`}
+                  >
+                    <div>
+                      <p className="text-xl font-semibold text-[#2FB7B2]">
+                        {slot.startTime} - {slot.endTime}
+                      </p>
+                      <p className="text-xs text-gray-400 mt-1">
+                        ₹{slot.consultingFee} consultation
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-4">
+                      <span className={`px-4 py-1.5 rounded-full text-sm font-medium ${statusUI.badge}`}>
+                        {statusUI.label}
+                      </span>
+
+                      {slot.status === "AVAILABLE" && (
+                        <button
+                          onClick={() => setDeleteId(slot.id)}
+                          className="text-gray-400 hover:text-red-500 transition"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      )}
+
+                      {slot.status === "CANCELLED" && (
+                        <button
+                          onClick={() => handleActivate(slot.id)}
+                          className="px-4 py-1.5 rounded-full text-sm font-medium bg-emerald-100 text-emerald-600 hover:bg-emerald-200 transition"
+                        >
+                          Activate
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* DELETE MODAL */}
+        {deleteId && (
+          <div className="fixed inset-0 bg-black/40 flex items-center justify-center">
+            <div className="bg-white rounded-2xl p-6 w-96 shadow-xl">
+              <h4 className="font-semibold mb-4">Confirm Delete</h4>
+              <p className="text-sm text-gray-500 mb-6">
+                Are you sure you want to delete this slot?
+              </p>
+              <div className="flex justify-end gap-3">
+                <button
+                  onClick={() => setDeleteId(null)}
+                  className="px-4 py-2 rounded-lg border"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmDelete}
+                  className="px-4 py-2 rounded-lg bg-red-500 text-white"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-
-      {showModal && (
-        <AddSessionModal
-          onClose={()=>setShowModal(false)}
-          onSave={handleAddSession}
-        />
-      )}
-
-      {alertMsg && (
-        <AppAlert
-          message={alertMsg}
-          onClose={()=>setAlertMsg(null)}
-        />
-      )}
     </div>
   );
 }

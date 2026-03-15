@@ -5,56 +5,72 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="45386635-bbb0-4acb-a83b-fdef7964182b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/untitled/src/MenuItem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/untitled/src/Restaurant.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/petcare/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/petcare/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/PetCareApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/PetCareApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/admin/controller/AdminDoctorController.java" beforeDir="false" afterPath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/admin/controller/AdminDoctorController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/admin/service/AdminDoctorService.java" beforeDir="false" afterPath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/admin/service/AdminDoctorService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/admin/service/impl/AdminDoctorServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/admin/service/impl/AdminDoctorServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/auth/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/auth/controller/AuthController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/common/security/JwtAuthenticationFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/common/security/JwtAuthenticationFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/common/security/JwtService.java" beforeDir="false" afterPath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/common/security/JwtService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/common/security/UserPrincipal.java" beforeDir="false" afterPath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/common/security/UserPrincipal.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/config/CorsConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/config/CorsConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/config/StaticResourceConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/config/StaticResourceConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/doctor/controller/DoctorController.java" beforeDir="false" afterPath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/doctor/controller/DoctorController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/doctor/domain/ApplicationStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/doctor/domain/ApplicationStatus.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/doctor/domain/DoctorApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/doctor/domain/DoctorApplication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/doctor/dto/DoctorApplicationRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/doctor/dto/DoctorApplicationRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/doctor/dto/PublicDoctorCardResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/doctor/dto/PublicDoctorCardResponse.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/doctor/repository/DoctorApplicationRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/doctor/repository/DoctorApplicationRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/doctor/service/DoctorService.java" beforeDir="false" afterPath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/doctor/service/DoctorService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/doctor/service/impl/DoctorServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/doctor/service/impl/DoctorServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/notification/service/impl/EmailNotificationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/notification/service/impl/EmailNotificationService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/pets/controller/PetController.java" beforeDir="false" afterPath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/pets/controller/PetController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/pets/domain/Pet.java" beforeDir="false" afterPath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/pets/domain/Pet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/pets/repository/PetRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/pets/repository/PetRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/pets/service/PetService.java" beforeDir="false" afterPath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/pets/service/PetService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/pets/service/impl/PetServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/pets/service/impl/PetServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/user/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/user/repository/UserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/schedule/controller/DoctorScheduleController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/schedule/domain/DoctorAvailability.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/schedule/domain/DoctorDaySchedule.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/schedule/domain/DoctorDaySession.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/schedule/dto/CreateDoctorScheduleRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/schedule/dto/DoctorDayScheduleResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/schedule/dto/DoctorScheduleDateResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/schedule/dto/DoctorSessionRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/schedule/dto/DoctorSessionResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/schedule/enums/AvailabilityStatus.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/schedule/repository/DoctorAvailabilityRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/schedule/repository/DoctorDayScheduleRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/schedule/repository/DoctorDaySessionRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/schedule/service/DoctorScheduleService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/schedule/service/impl/DoctorScheduleServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/user/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/user/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/user/dto/DoctorListResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/user/dto/DoctorListResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/user/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/user/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/user/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/petcare/src/main/java/com/example/PetCare/user/service/impl/UserServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/petcare/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/petcare/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Frontend/src/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/App.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Frontend/src/Home.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/Home.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Frontend/src/admin/AdminDashboard.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Frontend/src/api/axios.js" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/api/axios.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/src/admin/pages/AdminDashboard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/admin/pages/AdminDashboard.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Frontend/src/auth/Login.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/auth/Login.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/src/auth/VerifyEmail.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/auth/VerifyEmail.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/src/components/alrettab/AppAlert.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/components/alrettab/AppAlert.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Frontend/src/components/navbars/PublicNavbar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/components/navbars/PublicNavbar.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/src/context/DoctorStatusContext.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/context/DoctorStatusContext.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/src/doctor/api/scheduleApi.js" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/doctor/api/scheduleApi.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/src/doctor/components/AddSessionModal.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/src/doctor/components/ScheduleCalendar.jsx" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../Frontend/src/doctor/pages/DoctorApplicationSuccess.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/doctor/pages/DoctorApplicationSuccess.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/src/doctor/pages/DoctorAvailability.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/doctor/pages/DoctorAvailability.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Frontend/src/doctor/pages/DoctorDashboard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/doctor/pages/DoctorDashboard.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Frontend/src/doctor/pages/DoctorRegister.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/doctor/pages/DoctorRegister.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Frontend/src/guards/DoctorApplicationGuard.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/src/doctor/service/doctorAvailabilityApi.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../Frontend/src/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/index.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Frontend/src/layouts/PublicLayout.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/layouts/PublicLayout.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Frontend/src/main.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/main.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Frontend/src/pet/pages/MyPets.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/pet/pages/MyPets.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Frontend/src/pet/services/petApi.js" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/pet/services/petApi.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/src/layouts/AdminLayout.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/layouts/AdminLayout.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/src/product/ProductList.jsx" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../Frontend/src/routes/AdminRoutes.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/routes/AdminRoutes.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Frontend/src/routes/DoctorRoutes.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/routes/DoctorRoutes.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Frontend/src/routes/PetRoutes.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/routes/PetRoutes.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Frontend/src/routes/RequiredAdminAuth.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/routes/RequiredAdminAuth.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Frontend/src/routes/RequiredDoctorAuth.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/routes/RequiredDoctorAuth.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/src/routes/ProductRoutes.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/routes/ProductRoutes.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Frontend/src/routes/UserRoutes.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/routes/UserRoutes.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Frontend/src/user/pages/DoctorList.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/user/pages/DoctorList.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/src/user/pages/Profile.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/user/pages/Profile.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/src/user/pages/UserDashboard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/user/pages/UserDashboard.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/src/user/pages/UserRegister.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/user/pages/UserRegister.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/src/user/service/appointmentService.js" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/src/user/service/appointmentService.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,6 +106,7 @@
     &quot;Application.PetCareApplication.executor&quot;: &quot;Run&quot;,
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,

@@ -20,7 +20,7 @@ public class PublicDoctorCardResponse {
 
     public static PublicDoctorCardResponse from(DoctorApplication da) {
         return new PublicDoctorCardResponse(
-                da.getUser().getId(),
+                da.getId(),
                 da.getUser().getFullName(),
                 da.getSpecialization(),
                 da.getClinicName(),

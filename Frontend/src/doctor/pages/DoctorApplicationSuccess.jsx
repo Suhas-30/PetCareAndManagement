@@ -1,15 +1,28 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { useDoctorStatus } from "../../context/DoctorStatusContext";
+import { useDoctorStatus, } from "../../context/DoctorStatusContext";
+
 export default function DoctorApplicationSuccess() {
   const navigate = useNavigate();
-  const { doctorStatus } = useDoctorStatus();
-  // remove access when leaving page
+  const { doctorStatus, fetchDoctorStatus, loading } = useDoctorStatus();
+
+  // ✅ fetch latest status when page opens
   useEffect(() => {
+    fetchDoctorStatus();
+
     return () => {
       sessionStorage.removeItem("doctorApplied");
     };
   }, []);
+
+  const renderStatus = () => {
+    if (loading) return "Loading...";
+    if (doctorStatus === "PENDING") return "Pending Review ⏳";
+    if (doctorStatus === "REJECTED") return "Application Rejected ❌";
+    if (doctorStatus === "APPROVED") return "Approved ✅";
+
+    return "Application Not Submitted";
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#F7F9FB] to-[#EEF3F7] px-4">
@@ -29,10 +42,7 @@ export default function DoctorApplicationSuccess() {
         <div className="bg-[#F7F9FB] border rounded-xl p-4 mb-8">
           <p className="text-sm text-gray-500">Current Status</p>
           <p className="font-semibold text-[#FF9F43] mt-1">
-            {!doctorStatus && "Application Not Submitted"}
-            {doctorStatus === "PENDING" && "Pending Review ⏳"}
-            {doctorStatus === "REJECTED" && "Application Rejected ❌"}
-            {doctorStatus === "APPROVED" && "Approved ✅"}
+            {renderStatus()}
           </p>
         </div>
 

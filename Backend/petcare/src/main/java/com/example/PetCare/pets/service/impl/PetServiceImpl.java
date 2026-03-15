@@ -4,6 +4,7 @@ import com.example.PetCare.common.exception.AppException;
 import com.example.PetCare.pets.domain.Pet;
 import com.example.PetCare.pets.dto.PetCreateRequest;
 import com.example.PetCare.pets.dto.PetCreateResponse;
+import com.example.PetCare.pets.dto.PetDropdownDto;
 import com.example.PetCare.pets.mapper.PetMapper;
 import com.example.PetCare.pets.repository.PetRepository;
 import com.example.PetCare.pets.service.FileStorageService;
@@ -88,5 +89,18 @@ public class PetServiceImpl implements PetService {
 
         petRepository.delete(pet);
     }
+
+
+    @Override
+    public List<PetDropdownDto> getPetNameAndId(UUID userId){
+        List<Pet> pets = petRepository.findByUserId(userId);
+        return  pets.stream()
+                .map(pet -> new PetDropdownDto(
+                        pet.getId(),
+                        pet.getName()
+                ))
+                .toList();
+    }
+
 
 }

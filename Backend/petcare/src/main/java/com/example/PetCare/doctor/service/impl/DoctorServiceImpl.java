@@ -45,23 +45,32 @@ public class DoctorServiceImpl implements DoctorService {
             throw new AppException("You are already a doctor");
         }
 
-        // pending application check
+        // ✅ LICENSE CHECK (MAIN PART)
+        boolean licenseExists =
+                doctorApplicationRepository.existsByLicenseNumberAndStatusIn(
+                        request.getLicenseNumber(),
+                        List.of(ApplicationStatus.PENDING, ApplicationStatus.APPROVED)
+                );
+
+        if (licenseExists) {
+            throw new AppException("License number already exists");
+        }
+
+        // pending application check (user-wise)
         boolean alreadyPending =
-                doctorApplicationRepository
-                        .existsByUser_IdAndStatus(
-                                user.getId(),
-                                ApplicationStatus.PENDING
-                        );
+                doctorApplicationRepository.existsByUser_IdAndStatus(
+                        user.getId(),
+                        ApplicationStatus.PENDING
+                );
 
         if (alreadyPending) {
             throw new AppException("You already have a pending application");
         }
 
-        // ✅ save certificate file
-        String certificatePath =
-                fileStorageService.saveCertificate(
-                        request.getCertificateFile()
-                );
+        // certificate validation
+        if (request.getCertificatePath() == null || request.getCertificatePath().isBlank()) {
+            throw new AppException("Certificate is required");
+        }
 
         // create application
         DoctorApplication application = new DoctorApplication();
@@ -69,11 +78,8 @@ public class DoctorServiceImpl implements DoctorService {
         application.setLicenseNumber(request.getLicenseNumber());
         application.setSpecialization(request.getSpecialization());
         application.setYearsOfExperience(request.getYearsOfExperience());
+        application.setCertificatePath(request.getCertificatePath());
 
-        // ✅ new stored file path
-        application.setCertificatePath(certificatePath);
-
-        // clinic details
         application.setClinicName(request.getClinicName());
         application.setPhone(request.getPhone());
         application.setClinicEmail(request.getClinicEmail());
@@ -108,11 +114,13 @@ public class DoctorServiceImpl implements DoctorService {
 
         DoctorApplication application = optionalApplication.get();
 
+
         DoctorApplicationStatusResponse response =
                 new DoctorApplicationStatusResponse();
 
         response.setStatus(application.getStatus().name());
-        response.setRejectReason(application.getRejectionReason());
+
+        response.setRejectReason(application.getRejectReason());
 
         return response;
     }

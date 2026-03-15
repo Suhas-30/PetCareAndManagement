@@ -6,6 +6,10 @@ import DoctorRegisterGuard from "../guards/DoctorRegisterGuard";
 import RequiredDoctorAuth from "./RequiredDoctorAuth";
 import DoctorDashboard from "../doctor/pages/DoctorDashboard";
 import DoctorAvailability from "../doctor/pages/DoctorAvailability"
+import DoctorAvailabilityView from "../user/pages/DoctorAvailabilityView";
+import RequiredUserAuth from "./RequiredUserAuth";
+import MyAppointments from "../user/pages/MyAppointments";
+import UpcomingAppointments from "../doctor/pages/UpcomingAppointments";
 export default function DoctorRoutes() {
   return (
     <>
@@ -46,6 +50,26 @@ export default function DoctorRoutes() {
           </RequiredDoctorAuth>
         }
       />
+
+      <Route
+        path="/my-appointments"
+        element={
+          <RequiredUserAuth>
+              <MyAppointments></MyAppointments>
+          </RequiredUserAuth>
+        }
+      />
+
+      <Route
+        path="/doctor/dashboard/upcoming"
+        element = {
+          <RequiredDoctorAuth>
+            <UpcomingAppointments></UpcomingAppointments>
+          </RequiredDoctorAuth>
+        }
+      />
+
     </>
+    
   );
 }

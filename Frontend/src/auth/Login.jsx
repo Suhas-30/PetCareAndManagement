@@ -3,15 +3,16 @@ import { useNavigate } from "react-router-dom";
 import { useDoctorStatus } from "../context/DoctorStatusContext";
 import { useAuth } from "../context/AuthContext";
 import api from "../api/axios";
-// import AppAlert from "../components/AppAlert"; // ✅ import alert
 import AppAlert from "../components/alrettab/AppAlert";
+
 export default function Login() {
 
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [alertMsg, setAlertMsg] = useState(null); // ✅ alert state
+  const [alertData, setAlertData] = useState(null); // ✅ changed
+  const [loading, setLoading] = useState(false);
 
   const { fetchDoctorStatus } = useDoctorStatus();
   const { login } = useAuth();
@@ -29,6 +30,7 @@ export default function Login() {
   /* -------- SUBMIT -------- */
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
       const data = await loginApi({ email, password });
@@ -38,24 +40,35 @@ export default function Login() {
         role: data.data.role,
       };
 
-      // ✅ update AuthContext
       login(sessionData);
-
       await fetchDoctorStatus();
 
-      if (sessionData.role === "ADMIN") {
-        navigate("/admin/dashboard");
-      } else if (sessionData.role === "DOCTOR") {
-        navigate("/doctor/dashboard");
-      } else {
-        navigate("/user/dashboard");
-      }
+      // ✅ optional success alert before redirect
+      setAlertData({
+        message: "Login successful",
+        type: "success",
+      });
+
+      setTimeout(() => {
+        if (sessionData.role === "ADMIN") {
+          navigate("/admin/dashboard");
+        } else if (sessionData.role === "DOCTOR") {
+          navigate("/doctor/dashboard");
+        } else {
+          navigate("/user/dashboard");
+        }
+      }, 800);
 
     } catch (err) {
       console.error("Login failed:", err);
 
-      // ✅ show professional alert instead of window.alert
-      setAlertMsg("Invalid email or password");
+      setAlertData({
+        message: "Invalid email or password",
+        type: "error",
+      });
+
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -67,10 +80,11 @@ export default function Login() {
   return (
     <>
       {/* ✅ ALERT */}
-      {alertMsg && (
+      {alertData && (
         <AppAlert
-          message={alertMsg}
-          onClose={() => setAlertMsg(null)}
+          message={alertData.message}
+          type={alertData.type}
+          onClose={() => setAlertData(null)}
         />
       )}
 
@@ -93,8 +107,8 @@ export default function Login() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-3 border rounded-lg
-              focus:outline-none focus:ring-2 focus:ring-[#2FB7B2]"
+              disabled={loading}
+              className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2FB7B2]"
             />
 
             <input
@@ -103,13 +117,13 @@ export default function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full px-4 py-3 border rounded-lg
-              focus:outline-none focus:ring-2 focus:ring-[#2FB7B2]"
+              disabled={loading}
+              className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2FB7B2]"
             />
 
             <div className="flex justify-end">
               <span
-                onClick={() => navigate("/forgot-password")}
+                onClick={() => !loading && navigate("/forgot-password")}
                 className="text-sm text-[#2FB7B2] cursor-pointer hover:underline"
               >
                 Forgot Password?
@@ -118,11 +132,21 @@ export default function Login() {
 
             <button
               type="submit"
-              className="w-full bg-[#FF9F43] text-white py-3
-              rounded-lg font-semibold hover:opacity-90 transition"
+              disabled={loading}
+              className={`w-full py-3 rounded-lg font-semibold transition flex items-center justify-center gap-2
+                ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-[#FF9F43] hover:opacity-90 text-white"}
+              `}
             >
-              Login
+              {loading ? (
+                <>
+                  <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                  Processing...
+                </>
+              ) : (
+                "Login"
+              )}
             </button>
+
           </form>
 
           <div className="flex items-center my-6">
@@ -133,8 +157,8 @@ export default function Login() {
 
           <button
             onClick={handleGoogleLogin}
-            className="w-full border border-gray-300 py-3 rounded-lg
-            flex items-center justify-center gap-2 hover:bg-gray-50"
+            disabled={loading}
+            className="w-full border border-gray-300 py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-50"
           >
             <img
               src="https://www.svgrepo.com/show/475656/google-color.svg"
@@ -147,7 +171,7 @@ export default function Login() {
           <p className="text-center text-sm text-gray-500 mt-6">
             Don’t have an account?{" "}
             <span
-              onClick={() => navigate("/register")}
+              onClick={() => !loading && navigate("/register")}
               className="text-[#2FB7B2] font-semibold cursor-pointer hover:underline"
             >
               Create Account

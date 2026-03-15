@@ -87,7 +87,7 @@ export default function Home() {
             className="bg-white rounded-xl shadow p-6 text-center cursor-pointer hover:shadow-lg transition"
             onClick={() => {
               console.log("Pet Marketplace clicked");
-              navigate("/market-place");
+              navigate("/products");
             }}
           >
             <img

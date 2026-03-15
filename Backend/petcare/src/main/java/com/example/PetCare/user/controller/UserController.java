@@ -3,6 +3,7 @@ package com.example.PetCare.user.controller;
 import com.example.PetCare.common.exception.AppException;
 import com.example.PetCare.common.response.ApiResponse;
 import com.example.PetCare.common.security.UserPrincipal;
+import com.example.PetCare.doctor.domain.DoctorApplication;
 import com.example.PetCare.user.domain.User;
 import com.example.PetCare.user.dto.DoctorListResponse;
 import com.example.PetCare.user.dto.UserProfileResponse;

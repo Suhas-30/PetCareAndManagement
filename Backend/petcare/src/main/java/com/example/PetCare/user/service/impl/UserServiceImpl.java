@@ -1,5 +1,8 @@
 package com.example.PetCare.user.service.impl;
 
+import com.example.PetCare.doctor.domain.ApplicationStatus;
+import com.example.PetCare.doctor.domain.DoctorApplication;
+import com.example.PetCare.doctor.repository.DoctorApplicationRepository;
 import com.example.PetCare.user.domain.Role;
 import com.example.PetCare.user.domain.User;
 import com.example.PetCare.user.domain.UserStatus;
@@ -13,18 +16,19 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    public UserServiceImpl(UserRepository userRepository){
+    private final DoctorApplicationRepository doctorApplicationRepository;
+
+    public UserServiceImpl(UserRepository userRepository,
+                           DoctorApplicationRepository doctorApplicationRepository) {
         this.userRepository = userRepository;
+        this.doctorApplicationRepository = doctorApplicationRepository;
     }
 
     @Override
     public List<DoctorListResponse> getAllDoctors() {
 
-        List<User> doctors =
-                userRepository.findByRoleAndUserStatus(
-                        Role.DOCTOR,
-                        UserStatus.ACTIVE
-                );
+        List<DoctorApplication> doctors =
+                doctorApplicationRepository.findByStatus(ApplicationStatus.APPROVED);
 
         return doctors.stream()
                 .map(DoctorListResponse::from)

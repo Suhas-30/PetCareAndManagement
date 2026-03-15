@@ -55,8 +55,12 @@ public class SecurityConfig {
                         // ⭐ ADD THIS
                         .requestMatchers("/uploads/**").permitAll()
                         .requestMatchers("/auth/refresh").authenticated()
-
+                        .requestMatchers("/payment/verify").permitAll()
                         .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers("/api/v1/public/**").permitAll()
+                        .requestMatchers("/api/v1/google/authorize").permitAll()
+                        .requestMatchers("/api/v1/oauth2callback").permitAll()
+                        .requestMatchers("/google/authorize").permitAll()
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/v1/files/**").permitAll()
                         .anyRequest().authenticated()
@@ -78,7 +82,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://localhost:5173"));
         configuration.setAllowedMethods(
-                List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH" )
         );
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);

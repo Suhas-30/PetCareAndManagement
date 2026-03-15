@@ -1,20 +1,21 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiLogIn } from "react-icons/fi";
-import { ChevronDown, Bell } from "lucide-react";
+import { ChevronDown, Bell, ShoppingBag } from "lucide-react";
 import { useDoctorStatus } from "../../context/DoctorStatusContext";
 import { getCurrentUser } from "../../user/service/userService";
 import { useAuth } from "../../context/AuthContext";
 import { getAlerts } from "../services/alertApi";
 
 export default function PublicNavbar() {
-
   const navigate = useNavigate();
 
+  /* ---------- DROPDOWN STATES ---------- */
   const [openJoin, setOpenJoin] = useState(false);
   const [openProfile, setOpenProfile] = useState(false);
   const [openNotifications, setOpenNotifications] = useState(false);
 
+  /* ---------- DATA STATES ---------- */
   const [currentUser, setCurrentUser] = useState(null);
   const [notifications, setNotifications] = useState([]);
 
@@ -54,18 +55,14 @@ export default function PublicNavbar() {
     }
   };
 
-  /* Load alerts when user logs in */
+  /* Load alerts when login */
   useEffect(() => {
-    if (user) {
-      loadAlerts();
-    }
+    if (user) loadAlerts();
   }, [user]);
 
   /* Reload alerts when dropdown opens */
   useEffect(() => {
-    if (openNotifications && user) {
-      loadAlerts();
-    }
+    if (openNotifications && user) loadAlerts();
   }, [openNotifications]);
 
   /* ---------- LOGOUT ---------- */
@@ -96,8 +93,7 @@ export default function PublicNavbar() {
   return (
     <nav className="bg-white shadow-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
-
-        {/* LOGO */}
+        {/* ---------- LOGO SECTION ---------- */}
         <h1
           className="text-xl font-bold text-[#2FB7B2] cursor-pointer"
           onClick={() => navigate("/")}
@@ -105,25 +101,33 @@ export default function PublicNavbar() {
           Smart Pet Care
         </h1>
 
-        {/* NAV LINKS */}
+        {/* ---------- NAV LINKS SECTION ---------- */}
         <div className="hidden md:flex gap-6 text-sm font-medium items-center">
           <button onClick={() => navigate("/")}>Home</button>
-          <button onClick={()=>navigate("/pets")}>My Pets</button>
+          <button onClick={() => navigate("/pets")}>My Pets</button>
           <button>Vets</button>
           <button>Shop</button>
 
-          {/* JOIN MENU */}
+          {/* ---------- CART NAVIGATION ---------- */}
+          <button
+            onClick={() => navigate("/checkout/cart")}
+            className="flex items-center gap-1 hover:text-[#2FB7B2]"
+          >
+            <ShoppingBag size={16} />
+            Cart
+          </button>
+
+          {/* ---------- JOIN MENU ---------- */}
           <div className="relative">
             <button
               onClick={() => setOpenJoin(!openJoin)}
               className="flex items-center gap-1 hover:text-[#2FB7B2]"
             >
-              Join <ChevronDown size={16}/>
+              Join <ChevronDown size={16} />
             </button>
 
             {openJoin && (
               <div className="absolute right-0 mt-2 w-52 bg-white border rounded-lg shadow-lg text-sm">
-
                 <button
                   className="w-full text-left px-4 py-2 hover:bg-[#F7F9FB]"
                   onClick={() => {
@@ -144,23 +148,20 @@ export default function PublicNavbar() {
                     Join as Doctor
                   </button>
                 )}
-
               </div>
             )}
           </div>
         </div>
 
-        {/* AUTH SECTION */}
+        {/* ---------- RIGHT SECTION (AUTH + NOTIFICATIONS) ---------- */}
         <div className="flex items-center">
-
-          {/* 🔔 NOTIFICATIONS */}
+          {/* ---------- NOTIFICATIONS ---------- */}
           <div className="relative mr-3">
-
             <button
               onClick={() => setOpenNotifications(!openNotifications)}
               className="relative p-2 rounded-full hover:bg-[#F7F9FB]"
             >
-              <Bell size={20}/>
+              <Bell size={20} />
 
               {notifications.length > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] px-1.5 rounded-full">
@@ -171,17 +172,14 @@ export default function PublicNavbar() {
 
             {openNotifications && (
               <div className="absolute right-0 mt-2 w-80 bg-white border rounded-xl shadow-lg max-h-96 overflow-y-auto">
-
-                <div className="p-3 font-semibold border-b">
-                  Notifications
-                </div>
+                <div className="p-3 font-semibold border-b">Notifications</div>
 
                 {notifications.length === 0 ? (
                   <div className="p-4 text-gray-400 text-sm">
                     No notifications
                   </div>
                 ) : (
-                  notifications.map(n => (
+                  notifications.map((n) => (
                     <button
                       key={n.id}
                       onClick={() => {
@@ -194,18 +192,17 @@ export default function PublicNavbar() {
                     </button>
                   ))
                 )}
-
               </div>
             )}
           </div>
 
-          {/* LOGIN / PROFILE */}
+          {/* ---------- LOGIN / PROFILE ---------- */}
           {!user ? (
             <button
               className="bg-[#FF9F43] text-white p-2.5 rounded-full"
               onClick={() => navigate("/login")}
             >
-              <FiLogIn/>
+              <FiLogIn />
             </button>
           ) : (
             <div className="relative">
@@ -215,14 +212,13 @@ export default function PublicNavbar() {
               >
                 {currentUser?.fullName
                   ?.split(" ")
-                  .map(n => n[0])
+                  .map((n) => n[0])
                   .join("")
                   .toUpperCase()}
               </button>
 
               {openProfile && (
                 <div className="absolute right-0 mt-2 w-44 bg-white border rounded-lg shadow-lg text-sm">
-
                   <button
                     onClick={() => navigate("/user/profile")}
                     className="w-full text-left px-4 py-2 hover:bg-[#F7F9FB]"
@@ -231,7 +227,15 @@ export default function PublicNavbar() {
                   </button>
 
                   <button
-                    onClick={() => navigate("/user/dashboard")}
+                    onClick={() => {
+                      if (loading) return;
+
+                      if (doctorStatus === "APPROVED") {
+                        navigate("/doctor/dashboard");
+                      } else {
+                        navigate("/user/dashboard");
+                      }
+                    }}
                     className="w-full text-left px-4 py-2 hover:bg-[#F7F9FB]"
                   >
                     Dashboard
@@ -243,12 +247,10 @@ export default function PublicNavbar() {
                   >
                     Logout
                   </button>
-
                 </div>
               )}
             </div>
           )}
-
         </div>
       </div>
     </nav>

@@ -20,8 +20,7 @@ public class DoctorApplicationRequest {
     private Integer yearsOfExperience;
 
     // ✅ certificate upload
-    @NotNull(message = "Certificate is required")
-    private MultipartFile certificateFile;
+    private String certificatePath;
 
     // ✅ clinic details
     @NotBlank

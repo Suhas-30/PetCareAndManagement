@@ -2,18 +2,22 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import docImage from "../../assets/images/docreg.jpg";
 import api from "../../api/axios";
+import AppAlert from "../../components/alrettab/AppAlert";
 
 export default function DoctorRegister() {
 
   const navigate = useNavigate();
 
-  // doctor info
+  /* ---------------- ALERT STATE ---------------- */
+  const [alert, setAlert] = useState(null);
+
+  /* ---------------- DOCTOR INFO ---------------- */
   const [licenseNumber, setLicenseNumber] = useState("");
   const [specialization, setSpecialization] = useState("");
   const [experience, setExperience] = useState("");
   const [certificateFile, setCertificateFile] = useState(null);
 
-  // clinic info
+  /* ---------------- CLINIC INFO ---------------- */
   const [clinicName, setClinicName] = useState("");
   const [phone, setPhone] = useState("");
   const [clinicEmail, setClinicEmail] = useState("");
@@ -24,12 +28,12 @@ export default function DoctorRegister() {
   const [state, setState] = useState("");
   const [pincode, setPincode] = useState("");
 
-  // ✅ consultation type
+  /* ---------------- CONSULTATION TYPE ---------------- */
   const [consultationType, setConsultationType] = useState("OFFLINE");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef();
 
-  // close dropdown when clicking outside
+  /* close dropdown when clicking outside */
   useEffect(() => {
     const handler = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -40,33 +44,52 @@ export default function DoctorRegister() {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  // API call
-  const applyDoctorApplication = async (formValues) => {
-    const formData = new FormData();
+  /* ---------------- APPLY API ---------------- */
+  const applyDoctorApplication = async (formValues, certificatePath) => {
 
-    Object.entries(formValues).forEach(([key, value]) => {
-      formData.append(key, value);
-    });
+    const payload = {
+      ...formValues,
+      certificatePath,
+    };
 
-    const res = await api.post("/doctor/apply", formData);
+    const res = await api.post("/doctor/apply", payload);
     return res.data;
   };
 
-  // submit
+  /* ---------------- SUBMIT ---------------- */
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (experience === "" || Number(experience) < 0) {
-      alert("Years of experience must be 0 or greater");
+      setAlert({
+        type: "warning",
+        message: "Years of experience must be 0 or greater",
+      });
       return;
     }
 
     if (!certificateFile) {
-      alert("Please upload certificate PDF");
+      setAlert({
+        type: "warning",
+        message: "Please upload certificate PDF",
+      });
       return;
     }
 
     try {
+
+      /* STEP 1 — upload file */
+      const uploadFormData = new FormData();
+      uploadFormData.append("file", certificateFile);
+
+      const uploadRes = await api.post(
+        "/doctor/upload-certificate",
+        uploadFormData
+      );
+
+      const certificatePath = uploadRes.data.data.fileName;
+
+      /* STEP 2 — send JSON request */
       await applyDoctorApplication({
         licenseNumber,
         specialization,
@@ -81,22 +104,34 @@ export default function DoctorRegister() {
         state,
         pincode,
         consultationType,
-        certificateFile,
-      });
+      }, certificatePath);
 
       navigate("/doctor/application-success");
 
     } catch (error) {
       console.error(error);
-      alert(
-        error?.response?.data?.message ||
-        "Application submission failed"
-      );
+
+      setAlert({
+        type: "error",
+        message:
+          error?.response?.data?.message ||
+          "Application submission failed",
+      });
     }
   };
 
+  /* ---------------- UI ---------------- */
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F7F9FB] to-[#EEF3F7] flex items-center justify-center px-4 py-10">
+
+      {/* ALERT */}
+      {alert && (
+        <AppAlert
+          type={alert.type}
+          message={alert.message}
+          onClose={() => setAlert(null)}
+        />
+      )}
 
       <div className="w-full max-w-6xl bg-white rounded-3xl shadow-xl overflow-hidden grid md:grid-cols-2">
 
@@ -142,11 +177,9 @@ export default function DoctorRegister() {
               onChange={(e)=>setExperience(e.target.value)}
               className="form-input" required />
 
-            {/* ✅ Consultation Type */}
+            {/* Consultation Type */}
             <div className="relative md:col-span-2" ref={dropdownRef}>
-              <p className="text-sm text-gray-500 mb-1">
-                Consultation Type
-              </p>
+              <p className="text-sm text-gray-500 mb-1">Consultation Type</p>
 
               <div
                 onClick={()=>setDropdownOpen(!dropdownOpen)}

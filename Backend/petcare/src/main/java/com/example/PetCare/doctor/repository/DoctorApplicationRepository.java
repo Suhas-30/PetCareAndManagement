@@ -2,6 +2,7 @@ package com.example.PetCare.doctor.repository;
 
 import com.example.PetCare.doctor.domain.ApplicationStatus;
 import com.example.PetCare.doctor.domain.DoctorApplication;
+import com.example.PetCare.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -20,6 +21,8 @@ public interface DoctorApplicationRepository
     boolean existsByUser_IdAndStatus(UUID userId,
                                      ApplicationStatus status);
 
+    Optional<DoctorApplication> findByUserAndStatus(User user, ApplicationStatus status);
+
     // admin usage (later)
     List<DoctorApplication> findByStatus(ApplicationStatus status);
 
@@ -31,4 +34,10 @@ public interface DoctorApplicationRepository
         AND u.userStatus = com.example.PetCare.user.domain.UserStatus.ACTIVE
         """)
     List<DoctorApplication> findApprovedDoctors();
+
+    boolean existsByLicenseNumberAndStatusIn(
+            String licenseNumber,
+            List<ApplicationStatus> statuses
+    );
+
 }

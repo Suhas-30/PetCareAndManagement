@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
 import { fetchDoctors } from "../service/doctorService";
-
+import { useNavigate } from "react-router-dom";
 
 export default function DoctorList() {
-
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [searchText, setSearchText] = useState("");
   const [consultationFilter, setConsultationFilter] = useState("ALL");
-
+  const navigate = useNavigate();
   // ✅ load doctors from backend
   useEffect(() => {
     loadDoctors();
@@ -47,13 +46,10 @@ export default function DoctorList() {
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-10">
-      <h2 className="text-2xl font-semibold mb-6">
-        Available Veterinarians
-      </h2>
+      <h2 className="text-2xl font-semibold mb-6">Available Veterinarians</h2>
 
       {/* Filters */}
       <div className="bg-white shadow-md rounded-xl p-4 mb-8 flex flex-wrap gap-4 items-center">
-
         <input
           type="text"
           placeholder="Search by doctor name or city..."
@@ -87,19 +83,21 @@ export default function DoctorList() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-lg">
-                  {doctor.fullName}
-                </h3>
-                <p className="text-sm text-gray-500">
-                  {doctor.specialization}
-                </p>
+                <h3 className="font-semibold text-lg">{doctor.fullName}</h3>
+                <p className="text-sm text-gray-500">{doctor.specialization}</p>
               </div>
             </div>
 
             <div className="mt-5 space-y-2 text-sm text-gray-600">
-              <p><b>Clinic:</b> {doctor.clinicName}</p>
-              <p><b>Experience:</b> {doctor.experience} years</p>
-              <p><b>City:</b> {doctor.city}</p>
+              <p>
+                <b>Clinic:</b> {doctor.clinicName}
+              </p>
+              <p>
+                <b>Experience:</b> {doctor.experience} years
+              </p>
+              <p>
+                <b>City:</b> {doctor.city}
+              </p>
               <p>
                 <b>Consultation:</b>{" "}
                 <span className="px-2 py-1 rounded-md bg-gray-100">
@@ -108,7 +106,12 @@ export default function DoctorList() {
               </p>
             </div>
 
-            <button className="mt-6 w-full bg-orange-400 text-white py-2 rounded-lg hover:opacity-90">
+            <button
+              onClick={() =>
+                navigate(`/doctors/${doctor.doctorId}/availability`)
+              }
+              className="mt-6 w-full bg-orange-400 text-white py-2 rounded-lg hover:opacity-90"
+            >
               View Availability
             </button>
           </div>

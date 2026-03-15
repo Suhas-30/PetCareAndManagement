@@ -6,12 +6,13 @@ const DoctorStatusContext = createContext();
 export const DoctorStatusProvider = ({ children }) => {
   const [doctorStatus, setDoctorStatus] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const [reason, setReason] = useState(null)
   const fetchDoctorStatus = async () => {
     const session = localStorage.getItem("userSession");
     if (!session) {
       setDoctorStatus(null);
       setLoading(false);
+      setReason(null);
       return;
     }
 
@@ -20,6 +21,8 @@ export const DoctorStatusProvider = ({ children }) => {
 
       // ✅ IMPORTANT FIX
       setDoctorStatus(res.data.status);
+      console.log("context file", res.data.rejectReason)
+      setReason(res.data.rejectReason)
     } catch {
       setDoctorStatus(null);
     } finally {
@@ -39,6 +42,7 @@ export const DoctorStatusProvider = ({ children }) => {
         setDoctorStatus,
         fetchDoctorStatus,
         loading,
+        reason
       }}
     >
       {children}

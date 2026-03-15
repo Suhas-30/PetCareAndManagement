@@ -35,3 +35,12 @@ export const getScheduleByDate = async (date) => {
   const response = await api.get(`/doctor/schedule/${date}`);
   return response.data;
 };
+
+/**
+ * GET UPCOMING APPOINTMENTS (DOCTOR DASHBOARD)
+ * GET /doctor/upcoming-appointments
+ */
+export const getUpcomingAppointments = async () => {
+  const response = await api.get("/doctor/upcoming-appointments");
+  return response.data;
+};

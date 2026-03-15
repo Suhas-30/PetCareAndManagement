@@ -5,6 +5,7 @@ import com.example.PetCare.common.security.UserPrincipal;
 import com.example.PetCare.pets.domain.Pet;
 import com.example.PetCare.pets.dto.PetCreateRequest;
 import com.example.PetCare.pets.dto.PetCreateResponse;
+import com.example.PetCare.pets.dto.PetDropdownDto;
 import com.example.PetCare.pets.service.PetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -72,6 +73,15 @@ public class PetController {
         return ResponseEntity.ok(
                 new ApiResponse(true, "Pet deleted successfully", null)
         );
+    }
+
+
+    @GetMapping("/petname-id")
+    public ResponseEntity<ApiResponse<List<PetDropdownDto>>> getPetNameAndId(@AuthenticationPrincipal UserPrincipal user){
+        UUID userId = user.getId();
+        List<PetDropdownDto> response = petService.getPetNameAndId(userId);
+
+        return ResponseEntity.ok(new ApiResponse<>(true, "Pet list fetched successfully", response));
     }
 
 

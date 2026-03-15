@@ -13,12 +13,12 @@ import AdminRoutes from "./routes/AdminRoutes";
 import AdminLayout from "./layouts/AdminLayout";
 import { refreshToken } from "./auth/service/authService";
 import { useEffect } from "react";
+import CheckoutLayout from "./layouts/CheckoutLayout";
+import CheckoutRoutes from "./routes/CheckoutRoutes"
 
 function App() {
-
   useEffect(() => {
     const syncToken = async () => {
-
       const session = localStorage.getItem("userSession");
       if (!session) return;
 
@@ -32,7 +32,7 @@ function App() {
           JSON.stringify({
             ...parsed,
             token: newToken,
-          })
+          }),
         );
 
         console.log("✅ JWT refreshed with latest role");
@@ -43,7 +43,6 @@ function App() {
 
     syncToken();
   }, []);
-
 
   return (
     <DoctorStatusProvider>
@@ -63,15 +62,11 @@ function App() {
           {PetRoutes()}
         </Route>
 
-        <Route element={<AdminLayout />}>
-          {AdminRoutes()}
-        </Route>
+        <Route element={<AdminLayout />}>{AdminRoutes()}</Route>
 
-
+        <Route element={<CheckoutLayout />}>{CheckoutRoutes()}</Route>
       </Routes>
     </DoctorStatusProvider>
-
-
   );
 }
 

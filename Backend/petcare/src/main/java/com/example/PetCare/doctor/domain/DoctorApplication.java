@@ -22,7 +22,7 @@ public class DoctorApplication {
     private User user;
 
     // ---------------- DOCTOR INFO ----------------
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String licenseNumber;
 
     @Column(nullable = false)

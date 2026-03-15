@@ -19,3 +19,11 @@ node_modules/
 # OS
 .DS_Store
 Thumbs.dbgit add .
+
+
+.idea/
+Backend/tokens/
+Backend/petcare/src/main/resources/credentials.json
+Backend/petcare/src/main/resources/google/
+
+.idea/
