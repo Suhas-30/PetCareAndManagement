@@ -13,5 +13,8 @@ public interface DoctorDashboardService {
     PrescriptionResponse saveOrUpdatePrescription(UUID doctorUserId, SavePrescriptionRequest request);
 
     PrescriptionResponse getPrescription(UUID appointmentId);
+    PrescriptionResponse updateMeetingLink(UUID doctorUserId, UUID appointmentId, String meetingLink);
+
+    public String getMeetingLink(UUID appointmentId);
 
 }

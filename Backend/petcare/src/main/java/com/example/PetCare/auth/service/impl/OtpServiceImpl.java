@@ -15,38 +15,67 @@ import java.util.UUID;
 
 @Service
 public class OtpServiceImpl implements OtpService {
+
     private static final SecureRandom random = new SecureRandom();
+
     private final EmailOtpRepository emailOtpRepository;
     private final NotificationService notificationService;
 
-    public OtpServiceImpl(EmailOtpRepository emailOtpRepository, NotificationService notificationService) {
+    public OtpServiceImpl(EmailOtpRepository emailOtpRepository,
+                          NotificationService notificationService) {
         this.emailOtpRepository = emailOtpRepository;
         this.notificationService = notificationService;
     }
 
+    /* ============================
+       CREATE + SEND OTP
+    ============================ */
+
     @Transactional
     public void createAndSendOtp(User user) {
-        this.emailOtpRepository.invalidateOldOtps(user.getId());
-        String otp = this.generateOtp();
+
+        emailOtpRepository.invalidateOldOtps(user.getId());
+
+        String otp = generateOtp();
+
         EmailOtp emailOtp = new EmailOtp();
         emailOtp.setUser(user);
         emailOtp.setOtp(otp);
-        emailOtp.setExpiryTime(LocalDateTime.now().plusMinutes(5L));
+        emailOtp.setExpiryTime(LocalDateTime.now().plusMinutes(5));
         emailOtp.setUsed(false);
-        this.emailOtpRepository.save(emailOtp);
-        this.notificationService.send(user.getEmail(), "Smart Pet Care - OTP Verification", "Your OTP is: " + otp);
+
+        emailOtpRepository.save(emailOtp);
+
+        notificationService.send(
+                user.getEmail(),
+                "Smart Pet Care - OTP Verification",
+                "Your OTP is: " + otp + "\n\nThis OTP will expire in 5 minutes."
+        );
     }
 
+    /* ============================
+       VALIDATE OTP
+    ============================ */
+
     public EmailOtp validateOtp(UUID userId, String otp) {
-        EmailOtp emailOtp = (EmailOtp)this.emailOtpRepository.findByUser_IdAndOtpAndUsedFalse(userId, otp).orElseThrow(() -> new AppException("Invalid OTP"));
+
+        EmailOtp emailOtp = emailOtpRepository
+                .findByUser_IdAndOtpAndUsedFalse(userId, otp)
+                .orElseThrow(() -> new AppException("Invalid OTP"));
+
         if (emailOtp.getExpiryTime().isBefore(LocalDateTime.now())) {
             throw new AppException("OTP expired");
-        } else {
-            emailOtp.setUsed(true);
-            this.emailOtpRepository.save(emailOtp);
-            return emailOtp;
         }
+
+        emailOtp.setUsed(true);
+        emailOtpRepository.save(emailOtp);
+
+        return emailOtp;
     }
+
+    /* ============================
+       GENERATE OTP
+    ============================ */
 
     public String generateOtp() {
         int otp = 100000 + random.nextInt(900000);

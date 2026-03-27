@@ -16,13 +16,8 @@ public class EmailNotificationService implements NotificationService {
     @Value("${app.mail.from}")
     private String fromEmail;
 
-    @Value("${spring.mail.password}")
-    private String mailPassword;   // 👈 add this
-
     @Override
     public void send(String to, String subject, String message) {
-
-        System.out.println("MAIL PASSWORD USED = " + mailPassword);  // 👈 debug
 
         SimpleMailMessage mail = new SimpleMailMessage();
         mail.setFrom(fromEmail);
@@ -31,5 +26,52 @@ public class EmailNotificationService implements NotificationService {
         mail.setText(message);
 
         mailSender.send(mail);
+    }
+
+    /* =====================================
+       READY METHODS FOR YOUR USE CASES
+    ===================================== */
+
+    public void sendAppointmentBookedMail(String to, String doctorName, String date, String time) {
+
+        String subject = "Appointment Confirmed";
+
+        String message =
+                "Your appointment has been successfully booked.\n\n" +
+                        "Doctor: " + doctorName + "\n" +
+                        "Date: " + date + "\n" +
+                        "Time: " + time + "\n\n" +
+                        "You can view full details inside the app.\n\n" +
+                        "Thank you.";
+
+        send(to, subject, message);
+    }
+
+    public void sendDoctorApprovedMail(String to, String doctorName) {
+
+        String subject = "Doctor Application Approved";
+
+        String message =
+                "Congratulations Dr. " + doctorName + ",\n\n" +
+                        "Your application has been approved successfully.\n" +
+                        "You can now start accepting appointments.\n\n" +
+                        "Best regards,\nPetCare Team";
+
+        send(to, subject, message);
+    }
+
+    public void sendMeetingLinkMail(String to, String doctorName, String meetLink) {
+
+        String subject = "Your Consultation Meeting Link";
+
+        String message =
+                "Your online consultation is scheduled.\n\n" +
+                        "Doctor: " + doctorName + "\n\n" +
+                        "Join using the link below:\n" +
+                        meetLink + "\n\n" +
+                        "Please join on time.\n\n" +
+                        "PetCare Team";
+
+        send(to, subject, message);
     }
 }

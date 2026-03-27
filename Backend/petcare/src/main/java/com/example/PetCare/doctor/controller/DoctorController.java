@@ -2,10 +2,7 @@ package com.example.PetCare.doctor.controller;
 
 import com.example.PetCare.common.response.ApiResponse;
 import com.example.PetCare.common.security.UserPrincipal;
-import com.example.PetCare.doctor.dto.DoctorApplicationRequest;
-import com.example.PetCare.doctor.dto.DoctorApplicationStatusResponse;
-import com.example.PetCare.doctor.dto.PublicDoctorCardResponse;
-import com.example.PetCare.doctor.dto.SavePrescriptionRequest;
+import com.example.PetCare.doctor.dto.*;
 import com.example.PetCare.doctor.service.DoctorDashboardService;
 import com.example.PetCare.doctor.service.DoctorService;
 import com.example.PetCare.doctor.service.FileStorageService;
@@ -122,6 +119,35 @@ public class DoctorController {
 
         return ResponseEntity.ok(
                 new ApiResponse<>(true, "Prescription fetched", data)
+        );
+    }
+
+    @PutMapping("/meeting-link")
+    public ResponseEntity<ApiResponse<?>> updateMeetingLink(
+            @AuthenticationPrincipal UserPrincipal user,
+            @RequestBody UpdateMeetingLinkRequest request
+    ) {
+
+        var data = doctorDashboardService.updateMeetingLink(
+                user.getId(),
+                request.getAppointmentId(),
+                request.getMeetingLink()
+        );
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, "Meeting link updated", data)
+        );
+    }
+
+    @GetMapping("/meeting-link/{appointmentId}")
+    public ResponseEntity<ApiResponse<?>> getMeetingLink(
+            @PathVariable UUID appointmentId
+    ) {
+
+        var data = doctorDashboardService.getMeetingLink(appointmentId);
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, "Meeting link fetched", data)
         );
     }
 

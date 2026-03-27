@@ -26,6 +26,7 @@ public class UpcomingAppointmentDto {
     private LocalTime endTime;
 
     private String purpose;
+    private String mode;
 
     private List<String> medicalHistory;
 }

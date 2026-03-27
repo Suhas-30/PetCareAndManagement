@@ -16,6 +16,7 @@ public class SlotResponseDTO {
     private LocalTime endTime;
     private BigDecimal consultingFee;
     private DoctorInfo doctor;
+    private String mode;
 
     @Getter
     @Builder

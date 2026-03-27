@@ -10,8 +10,10 @@ import com.example.PetCare.doctor.domain.DoctorSlot;
 import com.example.PetCare.doctor.domain.SlotStatus;
 import com.example.PetCare.doctor.repository.DoctorApplicationRepository;
 import com.example.PetCare.doctor.repository.DoctorSlotRepository;
-import com.example.PetCare.payment.service.google.config.GoogleMeetService;
+import com.example.PetCare.google.service.GoogleMeetService;
+import com.example.PetCare.notification.service.NotificationService;
 import com.example.PetCare.user.repository.UserRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,9 +28,16 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentDraftRepository draftRepository;
     private final DoctorSlotRepository slotRepository;
     private final AppointmentRepository appointmentRepository;
-    private final GoogleMeetService googleMeetService;
+
     private final UserRepository userRepository;
     private final DoctorApplicationRepository doctorApplicationRepository;
+
+    private final GoogleMeetService googleMeetService;
+    private final NotificationService notificationService;
+
+    /* =====================================================
+       CREATE DRAFT
+    ===================================================== */
 
     @Override
     public UUID createDraft(UUID userId,
@@ -38,7 +47,6 @@ public class AppointmentServiceImpl implements AppointmentService {
                             AppointmentMode mode,
                             String purpose) {
 
-        /* 1️⃣ VALIDATE SLOT */
         DoctorSlot slot = slotRepository.findById(slotId)
                 .orElseThrow(() -> new RuntimeException("Slot not found"));
 
@@ -46,7 +54,6 @@ public class AppointmentServiceImpl implements AppointmentService {
             throw new RuntimeException("Slot not available");
         }
 
-        /* 2️⃣ CREATE DRAFT */
         UUID contextId = UUID.randomUUID();
 
         AppointmentDraft draft = AppointmentDraft.builder()
@@ -65,6 +72,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         return contextId;
     }
 
+    /* =====================================================
+       CREATE AFTER PAYMENT
+    ===================================================== */
+
     @Override
     public void createAfterPayment(UUID contextId) {
 
@@ -80,9 +91,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             throw new RuntimeException("Slot already booked");
         }
 
-        /* 3️⃣ FETCH EMAILS (ONLY FOR LOGGING) */
-        String doctorEmail = slot.getDoctor().getClinicEmail();
-
+        /* 3️⃣ FETCH EMAIL */
         String userEmail = userRepository.findById(draft.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"))
                 .getEmail();
@@ -90,13 +99,13 @@ public class AppointmentServiceImpl implements AppointmentService {
         /* 4️⃣ GENERATE MEET LINK (ONLY ONLINE) */
         String meetLink = null;
 
-//        if (draft.getMode() == AppointmentMode.ONLINE) {
-//            meetLink = googleMeetService.createMeet(
-//                    doctorEmail,
-//                    userEmail,
-//                    slot.getSlotDate().atTime(slot.getStartTime())
-//            );
-//        }
+        if (draft.getMode() == AppointmentMode.ONLINE) {
+            meetLink = googleMeetService.createMeet(
+                    slot.getDoctor().getClinicEmail(),
+                    userEmail,
+                    slot.getSlotDate().atTime(slot.getStartTime())
+            );
+        }
 
         /* 5️⃣ CREATE APPOINTMENT */
         Appointment appointment = Appointment.builder()
@@ -121,46 +130,57 @@ public class AppointmentServiceImpl implements AppointmentService {
         /* 7️⃣ DELETE DRAFT */
         draftRepository.deleteById(contextId);
 
-        /* 8️⃣ PRINT CONFIRMATION IN CONSOLE */
+        /* =====================================================
+           8️⃣ SEND EMAIL CONFIRMATION (NO MEET LINK)
+        ===================================================== */
 
-        System.out.println("\n================ APPOINTMENT CONFIRMED ================");
+        String subject = "Appointment Confirmed - Smart Pet Care";
+
+        String message;
 
         if (draft.getMode() == AppointmentMode.ONLINE) {
 
-            System.out.println("USER EMAIL: " + userEmail);
-            System.out.println("DOCTOR EMAIL: " + doctorEmail);
-            System.out.println("Doctor: " + slot.getDoctor().getClinicName());
-            System.out.println("Date: " + slot.getSlotDate());
-            System.out.println("Time: " + slot.getStartTime());
-            System.out.println("Google Meet Link: " + meetLink);
+            message =
+                    "Your appointment has been confirmed.\n\n" +
+                            "Doctor: " + slot.getDoctor().getClinicName() + "\n" +
+                            "Date: " + slot.getSlotDate() + "\n" +
+                            "Time: " + slot.getStartTime() + "\n\n" +
+                            "Your meeting link will be shared shortly before the consultation.\n\n" +
+                            "Smart Pet Care Team";
 
         } else {
 
-            System.out.println("USER EMAIL: " + userEmail);
-            System.out.println("DOCTOR EMAIL: " + doctorEmail);
-            System.out.println("Doctor: " + slot.getDoctor().getClinicName());
-            System.out.println("Date: " + slot.getSlotDate());
-            System.out.println("Time: " + slot.getStartTime());
-            System.out.println("Clinic Address: " + slot.getDoctor().getAddress1());
+            message =
+                    "Your appointment has been confirmed.\n\n" +
+                            "Doctor: " + slot.getDoctor().getClinicName() + "\n" +
+                            "Date: " + slot.getSlotDate() + "\n" +
+                            "Time: " + slot.getStartTime() + "\n\n" +
+                            "Clinic Address:\n" +
+                            slot.getDoctor().getAddress1() + "\n\n" +
+                            "Smart Pet Care Team";
         }
 
-        System.out.println("=======================================================\n");
+        notificationService.send(userEmail, subject, message);
     }
+
+    /* =====================================================
+       GET SLOTS
+    ===================================================== */
 
     @Override
     public List<DoctorSlot> getSlotsByDoctorAndDate(UUID doctorId, LocalDate date) {
 
-        List<DoctorSlot> slots =
-                slotRepository.findByDoctor_IdAndSlotDateAndStatusOrderByStartTimeAsc(
+        return slotRepository
+                .findByDoctor_IdAndSlotDateAndStatusOrderByStartTimeAsc(
                         doctorId,
                         date,
                         SlotStatus.AVAILABLE
                 );
-
-        System.out.println("SLOTS SIZE = " + slots.size());
-
-        return slots;
     }
+
+    /* =====================================================
+       GET MY APPOINTMENTS
+    ===================================================== */
 
     @Override
     public List<MyAppointmentDto> getMyAppointments(UUID userId) {
@@ -169,7 +189,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         return appointments.stream().map(appt -> {
 
-            // ✅ GET DOCTOR
             DoctorApplication doctor =
                     doctorApplicationRepository.findById(appt.getDoctorId()).orElse(null);
 
@@ -177,7 +196,6 @@ public class AppointmentServiceImpl implements AppointmentService {
                     ? doctor.getUser().getFullName()
                     : "-";
 
-            // ✅ GET SLOT
             DoctorSlot slot =
                     slotRepository.findById(appt.getSlotId()).orElse(null);
 
@@ -191,7 +209,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                     .clinicAddressSnapshot(appt.getClinicAddressSnapshot())
                     .meetingLink(appt.getMeetingLink())
                     .status(appt.getStatus().name())
-                    .prescription(null) // later
+                    .prescription(null)
                     .build();
 
         }).toList();

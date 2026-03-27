@@ -42,6 +42,10 @@ public class AuthServiceImpl implements AuthService {
         this.jwtService = jwtService;
     }
 
+    /* ============================
+       REGISTER
+    ============================ */
+
     @Override
     public User register(RegisterRequest request) {
 
@@ -57,12 +61,14 @@ public class AuthServiceImpl implements AuthService {
 
         userRepository.save(user);
 
-        System.out.println("UUID is : " + user.getId());
-
         otpService.createAndSendOtp(user);
 
         return user;
     }
+
+    /* ============================
+       VERIFY OTP
+    ============================ */
 
     @Override
     public String verifyOtp(UUID userId, String otp) {
@@ -75,8 +81,23 @@ public class AuthServiceImpl implements AuthService {
 
         userRepository.save(user);
 
-        return "Account Verified successfully";
+        /* ✅ SEND SUCCESS MAIL */
+
+        notificationService.send(
+                user.getEmail(),
+                "Account Verified Successfully",
+                "Hello " + user.getFullName() + ",\n\n" +
+                        "Your account has been verified successfully.\n\n" +
+                        "You can now login and start using Smart Pet Care.\n\n" +
+                        "Thank you."
+        );
+
+        return "Account verified successfully";
     }
+
+    /* ============================
+       RESEND OTP
+    ============================ */
 
     @Override
     public String resendOtp(UUID userId) {
@@ -92,6 +113,10 @@ public class AuthServiceImpl implements AuthService {
 
         return "OTP resent successfully";
     }
+
+    /* ============================
+       LOGIN
+    ============================ */
 
     @Override
     public LoginResponse login(LoginRequest request) {
@@ -116,8 +141,6 @@ public class AuthServiceImpl implements AuthService {
                 user.getEmail(),
                 user.getRole()
         );
-
-        System.out.println(token);
 
         return new LoginResponse(token, user.getRole());
     }

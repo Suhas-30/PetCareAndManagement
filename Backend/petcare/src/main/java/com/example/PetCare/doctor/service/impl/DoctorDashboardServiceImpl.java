@@ -10,6 +10,7 @@ import com.example.PetCare.doctor.repository.DoctorApplicationRepository;
 import com.example.PetCare.doctor.repository.DoctorSlotRepository;
 import com.example.PetCare.doctor.repository.PrescriptionRepository;
 import com.example.PetCare.doctor.service.DoctorDashboardService;
+import com.example.PetCare.notification.service.NotificationService;
 import com.example.PetCare.pets.domain.Pet;
 import com.example.PetCare.pets.repository.PetRepository;
 import com.example.PetCare.user.domain.User;
@@ -31,6 +32,7 @@ public class DoctorDashboardServiceImpl implements DoctorDashboardService {
     private final UserRepository userRepository;
     private final PetRepository petRepository;
     private final PrescriptionRepository prescriptionRepository;
+    private final NotificationService notificationService; // ✅ Added
 
     /* =========================================================
        UPCOMING APPOINTMENTS
@@ -83,6 +85,7 @@ public class DoctorDashboardServiceImpl implements DoctorDashboardService {
                     .startTime(slot.getStartTime())
                     .endTime(slot.getEndTime())
                     .purpose(appt.getPurpose())
+                    .mode(appt.getMode().name())
                     .medicalHistory(history)
                     .build();
 
@@ -99,21 +102,17 @@ public class DoctorDashboardServiceImpl implements DoctorDashboardService {
         UUID appointmentId = request.getAppointmentId();
         String notes = request.getNotes();
 
-        // ✅ STEP 1 — GET DOCTOR APPLICATION
         DoctorApplication doctor = doctorApplicationRepository
                 .findTopByUser_IdOrderByCreatedAtDesc(doctorUserId)
                 .orElseThrow(() -> new RuntimeException("Doctor not found"));
 
-        // ✅ STEP 2 — GET APPOINTMENT
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new RuntimeException("Appointment not found"));
 
-        // ✅ STEP 3 — VALIDATE DOCTOR
         if (!appointment.getDoctorId().equals(doctor.getId())) {
             throw new RuntimeException("Unauthorized");
         }
 
-        // ✅ STEP 4 — SAVE OR UPDATE
         Prescription prescription = prescriptionRepository
                 .findByAppointmentId(appointmentId)
                 .orElse(
@@ -126,7 +125,6 @@ public class DoctorDashboardServiceImpl implements DoctorDashboardService {
 
         Prescription saved = prescriptionRepository.save(prescription);
 
-        // ✅ RETURN RESPONSE
         return mapToDto(saved);
     }
 
@@ -142,6 +140,82 @@ public class DoctorDashboardServiceImpl implements DoctorDashboardService {
                 .orElseThrow(() -> new RuntimeException("Prescription not found"));
 
         return mapToDto(prescription);
+    }
+
+    /* =========================================================
+       UPDATE MEETING LINK + SEND EMAIL
+       ========================================================= */
+
+    @Override
+    public PrescriptionResponse updateMeetingLink(UUID doctorUserId, UUID appointmentId, String meetingLink) {
+
+        DoctorApplication doctor = doctorApplicationRepository
+                .findTopByUser_IdOrderByCreatedAtDesc(doctorUserId)
+                .orElseThrow(() -> new RuntimeException("Doctor not found"));
+
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new RuntimeException("Appointment not found"));
+
+        if (!appointment.getDoctorId().equals(doctor.getId())) {
+            throw new RuntimeException("Unauthorized");
+        }
+
+        /* UPDATE PRESCRIPTION */
+
+        Prescription prescription = prescriptionRepository
+                .findByAppointmentId(appointmentId)
+                .orElse(
+                        Prescription.builder()
+                                .appointmentId(appointmentId)
+                                .build()
+                );
+
+        prescription.setMeetingLink(meetingLink);
+        Prescription saved = prescriptionRepository.save(prescription);
+
+        /* UPDATE APPOINTMENT */
+
+        appointment.setMeetingLink(meetingLink);
+        appointmentRepository.save(appointment);
+
+        /* SEND EMAIL TO PET OWNER */
+
+        User owner = userRepository.findById(appointment.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        DoctorSlot slot = doctorSlotRepository.findById(appointment.getSlotId()).orElse(null);
+
+        String subject = "Your Consultation Meeting Link - Smart Pet Care";
+
+        String message =
+                "Your consultation meeting link has been shared by Dr. "
+                        + doctor.getUser().getFullName() + ".\n\n" +
+
+                        "Date: " + (slot != null ? slot.getSlotDate() : "-") + "\n" +
+                        "Time: " + (slot != null ? slot.getStartTime() : "-") + "\n\n" +
+
+                        "Join Meeting:\n" + meetingLink + "\n\n" +
+
+                        "Please join on time.\n\n" +
+                        "Smart Pet Care Team";
+
+        notificationService.send(owner.getEmail(), subject, message);
+
+        return mapToDto(saved);
+    }
+
+    /* =========================================================
+       GET MEETING LINK
+       ========================================================= */
+
+    @Override
+    public String getMeetingLink(UUID appointmentId) {
+
+        Prescription prescription = prescriptionRepository
+                .findByAppointmentId(appointmentId)
+                .orElseThrow(() -> new RuntimeException("Meeting link not found"));
+
+        return prescription.getMeetingLink();
     }
 
     /* =========================================================

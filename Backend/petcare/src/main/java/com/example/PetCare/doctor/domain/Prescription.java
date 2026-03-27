@@ -33,6 +33,7 @@ public class Prescription {
     public void prePersist() {
         createdAt = LocalDateTime.now();
     }
+    private String meetingLink;
 
     @PreUpdate
     public void preUpdate() {
