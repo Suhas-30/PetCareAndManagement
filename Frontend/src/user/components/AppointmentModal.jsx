@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import { getPrescriptionByAppointment } from "../service/appointmentService";
+import { getPrescriptionByAppointment, getMeetingLinkByAppointment } from "../service/appointmentService";
 
 export default function AppointmentModal({ appointment, onClose }) {
+
   const [prescription, setPrescription] = useState(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!appointment) return;
-
     loadPrescription();
   }, [appointment]);
 
@@ -16,7 +16,6 @@ export default function AppointmentModal({ appointment, onClose }) {
       setLoading(true);
 
       const res = await getPrescriptionByAppointment(appointment.id);
-
       setPrescription(res.data?.data?.notes || null);
 
     } catch (err) {
@@ -77,8 +76,11 @@ export default function AppointmentModal({ appointment, onClose }) {
                   Join Meeting
                 </a>
               ) : (
-                <p className="text-[#7A9E9D]">Not Available</p>
+                <p className="text-[#7A9E9D]">
+                  The doctor has not added the meeting link yet. It will be updated here shortly before the consultation.
+                </p>
               )}
+
             </div>
           )}
 
@@ -102,7 +104,7 @@ export default function AppointmentModal({ appointment, onClose }) {
               </p>
             ) : (
               <span className="text-[#7A9E9D]">
-                Doctor not yet uploaded prescription
+                Doctor has not uploaded the prescription yet.
               </span>
             )}
 

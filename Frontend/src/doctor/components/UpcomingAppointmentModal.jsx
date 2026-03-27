@@ -2,37 +2,84 @@ import { useEffect, useState } from "react";
 import {
   savePrescription,
   getPrescriptionByAppointment,
+  updateMeetingLink,
+  getMeetingLinkByAppointment
 } from "../service/doctorSlotApi";
 import AppAlert from "../../components/alrettab/AppAlert";
 
 export default function UpcomingAppointmentModal({ data, onClose }) {
+
   const [prescription, setPrescription] = useState("");
+  const [meetLink, setMeetLink] = useState("");
+  const [editingLink, setEditingLink] = useState(false);
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-
   const [alert, setAlert] = useState(null);
 
   /* =============================
-     LOAD PRESCRIPTION
+     LOAD DATA
   ============================== */
 
   useEffect(() => {
     if (!data) return;
-
     loadPrescription();
   }, [data]);
 
   const loadPrescription = async () => {
     try {
+
       const res = await getPrescriptionByAppointment(data.appointmentId);
 
       if (res?.data?.data?.notes) {
         setPrescription(res.data.data.notes);
       }
+
+      if (res?.data?.data?.meetingLink) {
+        setMeetLink(res.data.data.meetingLink);
+      } else {
+
+        // fallback (optional)
+        const meetRes = await getMeetingLinkByAppointment(data.appointmentId);
+        setMeetLink(meetRes?.data?.data || "");
+
+      }
+
     } catch (e) {
-      // ignore if not exists
+      // ignore
     } finally {
       setLoading(false);
+    }
+  };
+
+  /* =============================
+     UPDATE MEETING LINK ONLY
+  ============================== */
+
+  const handleUpdateMeeting = async () => {
+    try {
+
+      setSaving(true);
+
+      await updateMeetingLink({
+        appointmentId: data.appointmentId,
+        meetingLink: meetLink,
+      });
+
+      setEditingLink(false);
+
+      setAlert({
+        type: "success",
+        message: "Meeting link updated",
+      });
+
+    } catch {
+      setAlert({
+        type: "error",
+        message: "Failed to update meeting link",
+      });
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -42,6 +89,7 @@ export default function UpcomingAppointmentModal({ data, onClose }) {
 
   const handleSave = async () => {
     try {
+
       setSaving(true);
 
       await savePrescription({
@@ -51,16 +99,14 @@ export default function UpcomingAppointmentModal({ data, onClose }) {
 
       setAlert({
         type: "success",
-        message: "Prescription saved successfully",
+        message: "Saved successfully",
       });
 
     } catch (e) {
-
       setAlert({
         type: "error",
-        message: "Failed to save prescription",
+        message: "Failed to save",
       });
-
     } finally {
       setSaving(false);
     }
@@ -70,7 +116,6 @@ export default function UpcomingAppointmentModal({ data, onClose }) {
 
   return (
     <>
-      {/* ALERT */}
       {alert && (
         <AppAlert
           type={alert.type}
@@ -81,19 +126,18 @@ export default function UpcomingAppointmentModal({ data, onClose }) {
 
       <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 px-4">
 
-        {/* MODAL */}
         <div className="bg-white rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.08)] w-full max-w-xl max-h-[90vh] flex flex-col">
 
           {/* HEADER */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
 
-            <h3 className="text-lg font-semibold text-gray-800 tracking-tight">
+            <h3 className="text-lg font-semibold text-gray-800">
               Appointment Details
             </h3>
 
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-700 text-lg transition"
+              className="text-gray-400 hover:text-gray-700 text-lg"
             >
               ✕
             </button>
@@ -109,7 +153,7 @@ export default function UpcomingAppointmentModal({ data, onClose }) {
               </p>
             ) : (
               <>
-                {/* INFO GRID */}
+                {/* INFO */}
                 <div className="grid grid-cols-2 gap-x-6 gap-y-5 text-sm">
 
                   <Info label="Owner" value={data.ownerName} />
@@ -117,16 +161,13 @@ export default function UpcomingAppointmentModal({ data, onClose }) {
                   <Info label="Breed" value={data.breed || "-"} />
                   <Info label="Weight" value={`${data.weight || "-"} kg`} />
                   <Info label="Date" value={data.slotDate} />
-                  <Info
-                    label="Time"
-                    value={`${data.startTime} - ${data.endTime}`}
-                  />
+                  <Info label="Time" value={`${data.startTime} - ${data.endTime}`} />
 
                 </div>
 
                 {/* PURPOSE */}
                 <Section title="Purpose">
-                  <div className="bg-gray-50/70 border border-gray-100 rounded-xl px-4 py-2.5 text-sm text-gray-700">
+                  <div className="bg-gray-50 border border-gray-100 rounded-xl px-4 py-2.5 text-sm text-gray-700">
                     {data.purpose}
                   </div>
                 </Section>
@@ -146,16 +187,70 @@ export default function UpcomingAppointmentModal({ data, onClose }) {
                   )}
                 </Section>
 
+                {/* GOOGLE MEET (ONLY ONLINE) */}
+                {data.mode === "ONLINE" && (
+                  <Section title="Google Meet">
+
+                    {/* SHOW JOIN BUTTON */}
+                    {meetLink && !editingLink && (
+                      <div className="flex items-center gap-3">
+
+                        <a
+                          href={meetLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-4 py-2 rounded-lg bg-[#2FB7B2] text-white text-sm font-medium hover:bg-[#27a39f]"
+                        >
+                          Join Meeting
+                        </a>
+
+                        <button
+                          onClick={() => setEditingLink(true)}
+                          className="text-xs text-gray-500 underline"
+                        >
+                          Update link
+                        </button>
+
+                      </div>
+                    )}
+
+                    {/* SHOW INPUT */}
+                    {(editingLink || !meetLink) && (
+                      <div className="flex gap-3">
+
+                        <input
+                          type="text"
+                          value={meetLink}
+                          onChange={(e) => setMeetLink(e.target.value)}
+                          placeholder="Paste Google Meet link..."
+                          className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2FB7B2]/30"
+                        />
+
+                        <button
+                          onClick={handleUpdateMeeting}
+                          disabled={saving}
+                          className="px-4 py-2 rounded-lg bg-[#2FB7B2] text-white text-sm font-medium hover:bg-[#27a39f]"
+                        >
+                          {saving ? "Updating..." : "Update"}
+                        </button>
+
+                      </div>
+                    )}
+
+                  </Section>
+                )}
+
                 {/* PRESCRIPTION */}
                 <Section title="Prescription">
                   <textarea
                     value={prescription}
                     onChange={(e) => setPrescription(e.target.value)}
-                    placeholder="Write prescription here..."
-                    className="w-full bg-gray-50/60 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2FB7B2]/30 focus:border-[#2FB7B2] transition"
+                    placeholder="Write prescription..."
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2FB7B2]/30"
                     rows={4}
                   />
                 </Section>
+
               </>
             )}
 
@@ -166,7 +261,7 @@ export default function UpcomingAppointmentModal({ data, onClose }) {
 
             <button
               onClick={onClose}
-              className="px-4 py-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 text-sm transition"
+              className="px-4 py-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 text-sm"
             >
               Close
             </button>
@@ -174,7 +269,7 @@ export default function UpcomingAppointmentModal({ data, onClose }) {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="px-5 py-2 rounded-lg bg-[#2FB7B2] text-white hover:bg-[#27a39f] text-sm font-medium shadow-sm transition disabled:opacity-60"
+              className="px-5 py-2 rounded-lg bg-[#2FB7B2] text-white hover:bg-[#27a39f] text-sm font-medium"
             >
               {saving ? "Saving..." : "Save Prescription"}
             </button>
@@ -192,7 +287,7 @@ export default function UpcomingAppointmentModal({ data, onClose }) {
 function Info({ label, value }) {
   return (
     <div>
-      <p className="text-gray-400 text-xs tracking-wide">{label}</p>
+      <p className="text-gray-400 text-xs">{label}</p>
       <p className="font-medium text-gray-800">{value}</p>
     </div>
   );

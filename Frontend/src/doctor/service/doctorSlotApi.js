@@ -46,3 +46,20 @@ export const getPrescriptionByAppointment = (appointmentId) => {
 
 export const activateSlot = (slotId) =>
   api.patch(`/doctor/slots/${slotId}/activate`);
+
+/* ================================
+   UPDATE MEETING LINK
+================================ */
+
+export const updateMeetingLink = (payload) => {
+  return api.put("/doctor/meeting-link", payload);
+};
+
+
+/* ================================
+   GET MEETING LINK BY APPOINTMENT
+================================ */
+
+export const getMeetingLinkByAppointment = (appointmentId) => {
+  return api.get(`/doctor/meeting-link/${appointmentId}`);
+};

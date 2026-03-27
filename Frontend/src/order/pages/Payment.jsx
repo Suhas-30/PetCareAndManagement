@@ -34,8 +34,11 @@ export default function Payment() {
 
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY,
+
         amount: order.amount,
         currency: order.currency,
+        name: "Smart Pet Care Marketplace",
+        description: "Order payment",
         order_id: order.id,
 
         handler: async function (response) {

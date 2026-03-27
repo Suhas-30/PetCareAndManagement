@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDoctorStatus } from "../context/DoctorStatusContext";
 import { useAuth } from "../context/AuthContext";
+import { useGoogleLogin } from "@react-oauth/google";
 import api from "../api/axios";
 import AppAlert from "../components/alrettab/AppAlert";
 
@@ -11,7 +12,7 @@ export default function Login() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [alertData, setAlertData] = useState(null); // ✅ changed
+  const [alertData, setAlertData] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const { fetchDoctorStatus } = useDoctorStatus();
@@ -27,7 +28,7 @@ export default function Login() {
     }
   };
 
-  /* -------- SUBMIT -------- */
+  /* -------- NORMAL LOGIN -------- */
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -43,7 +44,6 @@ export default function Login() {
       login(sessionData);
       await fetchDoctorStatus();
 
-      // ✅ optional success alert before redirect
       setAlertData({
         message: "Login successful",
         type: "success",
@@ -60,26 +60,66 @@ export default function Login() {
       }, 800);
 
     } catch (err) {
-      console.error("Login failed:", err);
-
       setAlertData({
         message: "Invalid email or password",
         type: "error",
       });
-
     } finally {
       setLoading(false);
     }
   };
 
   /* -------- GOOGLE LOGIN -------- */
-  const handleGoogleLogin = () => {
-    console.log("Google login clicked");
-  };
+  const handleGoogleLogin = useGoogleLogin({
+    flow: "auth-code",
+ 
+
+    onSuccess: async (tokenResponse) => {
+      try {
+        setLoading(true);
+
+        const res = await api.post("/auth/google", {
+          code: tokenResponse.code,
+        });
+
+        const data = res.data;
+
+        const sessionData = {
+          token: data.token,
+          role: data.role,
+        };
+
+        login(sessionData);
+
+        setAlertData({
+          message: "Google login successful",
+          type: "success",
+        });
+
+        setTimeout(() => {
+          navigate("/user/dashboard");
+        }, 800);
+
+      } catch (err) {
+        setAlertData({
+          message: "Google login failed",
+          type: "error",
+        });
+      } finally {
+        setLoading(false);
+      }
+    },
+
+    onError: () => {
+      setAlertData({
+        message: "Google login cancelled",
+        type: "error",
+      });
+    },
+  });
 
   return (
     <>
-      {/* ✅ ALERT */}
       {alertData && (
         <AppAlert
           message={alertData.message}

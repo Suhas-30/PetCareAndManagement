@@ -55,3 +55,11 @@ export const verifyPaymentApi = (data) => {
 export const getPrescriptionByAppointment = (appointmentId) => {
   return api.get(`/doctor/prescription/${appointmentId}`);
 };
+
+/* ================================
+   GET MEETING LINK (USER SIDE)
+================================ */
+
+export const getMeetingLinkByAppointment = (appointmentId) => {
+  return api.get(`/doctor/meeting-link/${appointmentId}`);
+};
