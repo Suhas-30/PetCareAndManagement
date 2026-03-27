@@ -10,7 +10,6 @@ import com.example.PetCare.doctor.domain.DoctorSlot;
 import com.example.PetCare.doctor.domain.SlotStatus;
 import com.example.PetCare.doctor.repository.DoctorApplicationRepository;
 import com.example.PetCare.doctor.repository.DoctorSlotRepository;
-import com.example.PetCare.google.service.GoogleMeetService;
 import com.example.PetCare.notification.service.NotificationService;
 import com.example.PetCare.user.repository.UserRepository;
 
@@ -32,7 +31,6 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final UserRepository userRepository;
     private final DoctorApplicationRepository doctorApplicationRepository;
 
-    private final GoogleMeetService googleMeetService;
     private final NotificationService notificationService;
 
     /* =====================================================
@@ -99,13 +97,13 @@ public class AppointmentServiceImpl implements AppointmentService {
         /* 4️⃣ GENERATE MEET LINK (ONLY ONLINE) */
         String meetLink = null;
 
-        if (draft.getMode() == AppointmentMode.ONLINE) {
-            meetLink = googleMeetService.createMeet(
-                    slot.getDoctor().getClinicEmail(),
-                    userEmail,
-                    slot.getSlotDate().atTime(slot.getStartTime())
-            );
-        }
+//        if (draft.getMode() == AppointmentMode.ONLINE) {
+//            meetLink = googleMeetService.createMeet(
+//                    slot.getDoctor().getClinicEmail(),
+//                    userEmail,
+//                    slot.getSlotDate().atTime(slot.getStartTime())
+//            );
+//        }
 
         /* 5️⃣ CREATE APPOINTMENT */
         Appointment appointment = Appointment.builder()
