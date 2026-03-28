@@ -1,0 +1,37 @@
+package com.example.PetCare.booking.marketplace.domain;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@Entity
+@Table(name = "orders")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Order {
+
+    @Id
+    @GeneratedValue
+    private UUID id;
+
+    private UUID userId;
+
+    private UUID addressId;
+
+    private BigDecimal totalAmount;
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
+
+    private String razorpayOrderId;
+    private String razorpayPaymentId;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+}

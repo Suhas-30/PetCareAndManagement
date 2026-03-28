@@ -1,0 +1,40 @@
+# ========================
+# Environment & Secrets
+# ========================
+.env
+*.env
+
+# Google / API credentials
+Backend/petcare/src/main/resources/credentials.json
+Backend/petcare/src/main/resources/google-service-account.json
+Backend/petcare/src/main/resources/google/
+Backend/tokens/
+
+# ========================
+# Uploads (runtime files)
+# ========================
+Backend/uploads/
+
+# ========================
+# Spring Boot
+# ========================
+target/
+*.log
+
+# ========================
+# Node
+# ========================
+node_modules/
+
+# ========================
+# IDE
+# ========================
+.idea/
+*.iml
+.vscode/
+
+# ========================
+# OS
+# ========================
+.DS_Store
+Thumbs.db
