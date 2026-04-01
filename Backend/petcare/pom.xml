@@ -8,12 +8,14 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.0.2</version>
+        <version>3.3.2</version>
+        <relativePath/>
     </parent>
 
     <groupId>com.example</groupId>
     <artifactId>PetCare</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <name>PetCare</name>
 
     <properties>
         <java.version>17</java.version>
@@ -21,33 +23,37 @@
 
     <dependencies>
 
-        <!-- Spring Boot -->
+        <!-- ✅ Core Web (includes Jackson automatically) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webmvc</artifactId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+        <!-- JPA -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
+        <!-- Security -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
+        <!-- Validation -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
+        <!-- Mail -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
 
-        <!-- Database -->
+        <!-- PostgreSQL -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
@@ -82,12 +88,6 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- WebFlux -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webflux</artifactId>
-        </dependency>
-
         <!-- Razorpay -->
         <dependency>
             <groupId>com.razorpay</groupId>
@@ -95,7 +95,7 @@
             <version>1.4.3</version>
         </dependency>
 
-        <!-- ✅ Google OAuth ONLY -->
+        <!-- Google OAuth -->
         <dependency>
             <groupId>com.google.oauth-client</groupId>
             <artifactId>google-oauth-client-jetty</artifactId>
@@ -119,11 +119,6 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.10.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
         </dependency>
 
     </dependencies>
@@ -153,3 +148,4 @@
     </build>
 
 </project>
+
